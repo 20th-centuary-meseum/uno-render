@@ -1,6 +1,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <stdint.h>
+
 #define byte uint8_t
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 
