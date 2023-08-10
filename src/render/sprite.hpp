@@ -6,7 +6,7 @@
 class Sprite
 {
 public:
-	Sprite(byte X, byte Y);
+	Sprite(byte _face_id, byte _x, byte _y);
 	byte x;
 	byte y;
 	byte face_id;
