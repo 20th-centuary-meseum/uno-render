@@ -10,15 +10,15 @@ byte sprite[32] = {
     0b01111111,
     0b11111110,
     0b01000000,
-    0b00000010,
+    0b11111110,
     0b01000000,
-    0b00000010,
+    0b01111110,
     0b01000000,
-    0b00000010,
+    0b00111110,
     0b01000000,
-    0b00000010,
+    0b00011110,
     0b01000000,
-    0b00000010,
+    0b00001110,
     0b01000000,
     0b00000010,
     0b01000000,
@@ -52,20 +52,10 @@ void DecodeSprite(byte image_byte, byte x_pos, byte y_pos)
   for (int i = 0; i < TILE_SIZE; i++)
   {
     byte tmp = x_pos % 8;
-    TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8] = *(image_binary + i * 2) << tmp;
-    TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 1] = *(image_binary + i * 2) << tmp + *(image_binary + i * 2 + 1) << tmp;
-    TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 2] = *(image_binary + i * 2 + 1) << tmp;
+    TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8] |= *(image_binary + i * 2) >> tmp;
+    TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 1] |= *(image_binary + i * 2) << (8 - tmp) | *(image_binary + i * 2 + 1) >> tmp;
+    TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 2] |= *(image_binary + i * 2 + 1) << (8 - tmp);
   }
-
-  // byte x, y;
-
-  // for (y = y_pos >= 0 ? 0 : -y_pos; y < TILE_SIZE && y + y_pos < TILE_SIZE * MAP_HEIGHT; y++)
-  // {
-  //   for (x = x_pos >= 0 ? 0 : -x_pos; x < TILE_SIZE && x + x_pos < TILE_SIZE * MAP_WIDTH; x++)
-  //   {
-  //     TV.set_pixel(x_pos + x, y_pos + y, (image_binary[y * 2 + x / 8]) & (1 << 7 - x % 8));
-  //   }
-  // }
 }
 
 void DecodeImg(byte image_byte, byte x_pos, byte y_pos)
