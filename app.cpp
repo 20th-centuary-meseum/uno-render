@@ -14,19 +14,20 @@ void start_app()
 	Background background;
 	background.set(2, 2, IMG_ID_BOX, 0);
 
-	while (true)
-	{
-		// clearTV();
-		background.render();
-		box.render();
-		box2.render();
-		Sprite::start_next_frame();
-		box.next_frame();
-		box2.next_frame();
-		if (box.y > 100)
-			box.y = 0;
-		if (box2.x > 100)
-			box2.x = 0;
-		delay(16);
-	}
+	// background.render();
+	box.render();
+	box2.render();
+
+	// while (true)
+	// {
+	// 	// clearTV();
+	// 	Sprite::start_next_frame();
+	// 	box.next_frame();
+	// 	box2.next_frame();
+	// 	if (box.y > 100)
+	// 		box.y = 0;
+	// 	if (box2.x > 100)
+	// 		box2.x = 0;
+	// 	delay(16);
+	// }
 }

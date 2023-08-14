@@ -19,7 +19,7 @@ Sprite::Sprite(byte _face_id, byte _x, byte _y)
 	face_id = _face_id;
 }
 
-void Sprite::render() { DecodeImg(face_id * 4, x, y); }
+void Sprite::render() { DecodeSprite(face_id * 4, x, y); }
 
 void Sprite::next_frame()
 {
