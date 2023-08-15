@@ -8,7 +8,7 @@ void Sprite::start_next_frame()
 	frame_cnt = frame_cnt > 59 ? 0 : frame_cnt + 1;
 }
 
-Sprite::Sprite(byte _face_id, byte _x, byte _y)
+Sprite::Sprite(byte _face_id, short _x, short _y)
 {
 	x = _x;
 	y = _y;

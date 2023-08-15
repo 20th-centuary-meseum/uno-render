@@ -42,6 +42,12 @@ byte *images[] = {sprite};
 
 void DecodeSprite(byte image_byte, short x_pos, short y_pos)
 {
+
+    if (x_pos < -15 || x_pos >= TILE_SIZE * MAP_WIDTH)
+        return;
+    if (y_pos < -15 || y_pos >= TILE_SIZE * MAP_HEIGHT)
+        return;
+
     byte image_id = image_byte *= 2;
     byte image_rot = bitRead(image_byte, 0) + 2 * bitRead(image_byte, 0);
 
@@ -49,29 +55,27 @@ void DecodeSprite(byte image_byte, short x_pos, short y_pos)
 
     short tmp_y = y_pos * TILE_SIZE * MAP_WIDTH / 8;
     byte shift_length = x_pos % 8;
-  
-  uint16_t y_minus = 0;
-  uint16_t y_plus = 0;
-  if (y_pos<0) y_minus = -y_pos;
-  if (y_pos>MAP_HEIGHT*TILE_SIZE -1) y_plus = y_pos - (MAP_HEIGHT*TILE_SIZE -1); 
 
-
-    if (x_pos < -16 || x_pos >= TILE_SIZE * MAP_WIDTH)
-        return;
+    uint16_t y_minus = 0;
+    uint16_t y_plus = 0;
+    if (y_pos < 0)
+        y_minus = -y_pos;
+    if (y_pos > MAP_HEIGHT * TILE_SIZE - 1)
+        y_plus = y_pos - (MAP_HEIGHT * TILE_SIZE - 1);
 
     if (x_pos < -8) // 2개 짤림
     {
         for (int i = 0 + y_minus; i < TILE_SIZE - y_plus; i++)
         {
-            TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 2] |= *(image_binary + i * 2 + 1) << (8 - shift_length);
+            TV.screen[tmp_y + i * TILE_SIZE * MAP_WIDTH / 8] |= *(image_binary + i * 2 + 1) << -8 - x_pos;
         }
     }
     else if (x_pos < 0) // 1개 짤림
     {
         for (int i = 0 + y_minus; i < TILE_SIZE - y_plus; i++)
         {
-            TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 1] |= *(image_binary + i * 2) << (8 - shift_length) | *(image_binary + i * 2 + 1) >> shift_length;
-            TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 2] |= *(image_binary + i * 2 + 1) << (8 - shift_length);
+            TV.screen[tmp_y + i * TILE_SIZE * MAP_WIDTH / 8] |= *(image_binary + i * 2) << -x_pos | *(image_binary + i * 2 + 1) >> (8 + x_pos);
+            TV.screen[tmp_y + i * TILE_SIZE * MAP_WIDTH / 8 + 1] |= *(image_binary + i * 2 + 1) << -x_pos;
         }
     }
     else if (x_pos + 8 >= TILE_SIZE * MAP_WIDTH) // 2개 짤림
@@ -91,23 +95,13 @@ void DecodeSprite(byte image_byte, short x_pos, short y_pos)
     }
     else // 안 짤림.
     {
-        for (int i = 0 + y_minus; i < TILE_SIZE - y_plus - y_plus; i++)
+        for (int i = 0 + y_minus; i < TILE_SIZE - y_plus; i++)
         {
-            TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8] = *(image_binary + i * 2) >> shift_length;
-            TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 1] = *(image_binary + i * 2) << (8-shift_length) + *(image_binary + i * 2 + 1) >> shift_length;
-            TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 2] = *(image_binary + i * 2 + 1) << (8-shift_length);
+            TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8] |= *(image_binary + i * 2) >> shift_length;
+            TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 1] |= *(image_binary + i * 2) << (8 - shift_length) | *(image_binary + i * 2 + 1) >> shift_length;
+            TV.screen[tmp_y + x_pos / 8 + i * TILE_SIZE * MAP_WIDTH / 8 + 2] |= *(image_binary + i * 2 + 1) << (8 - shift_length);
         }
     }
-
-  // byte x, y;
-
-  // for (y = y_pos >= 0 ? 0 : -y_pos; y < TILE_SIZE && y + y_pos < TILE_SIZE * MAP_HEIGHT; y++)
-  // {
-  //   for (x = x_pos >= 0 ? 0 : -x_pos; x < TILE_SIZE && x + x_pos < TILE_SIZE * MAP_WIDTH; x++)
-  //   {
-  //     TV.set_pixel(x_pos + x, y_pos + y, (image_binary[y * 2 + x / 8]) & (1 << 7 - x % 8));
-  //   }
-  // }
 }
 
 void DecodeImg(byte image_byte, byte x_pos, byte y_pos)
