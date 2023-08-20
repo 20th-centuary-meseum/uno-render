@@ -2,7 +2,6 @@
 #define COMMON_H
 
 #include <Arduino.h>
-// #include <
 #include <stdint.h>
 
 #define byte uint8_t

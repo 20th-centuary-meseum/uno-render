@@ -1,4 +1,4 @@
-#define IMG const byte PROGMEM
+// #define IMG const byte PROGMEM
 
 #include <TVout.h>
 #include "decode_img.hpp"
@@ -24,7 +24,7 @@ byte box[32] = {0b00000000, 0b00000000,
                 0b00000000, 0b00000000};
 
 byte *images[] = {box};
-const byte PROGMEM sprites[][32] = {{0b01101000, 0b00010110,
+const byte sprites[][32] PROGMEM = {{0b01101000, 0b00010110,
                                      0b01000100, 0b00100010,
                                      0b01100011, 0b11000110,
                                      0b10111111, 0b11111000,
@@ -301,8 +301,9 @@ void DecodeSprite(byte image_byte, short x_pos, short y_pos)
     if (y_pos < -15 || y_pos >= TILE_SIZE * MAP_HEIGHT)
         return;
 
-    byte image_id = image_byte >> 2;
-    byte image_rot = bitRead(image_byte, 0) + 2 * bitRead(image_byte, 1);
+    byte image_id = image_byte;
+
+    // byte *sprites[image_id] = *(sprites + image_id);
 
     short tmp_y = y_pos * MAX_X / 8;
     byte shift_length = x_pos % 8;
@@ -318,39 +319,39 @@ void DecodeSprite(byte image_byte, short x_pos, short y_pos)
     {
         for (int i = y_minus; i < TILE_SIZE - y_plus; i++)
         {
-            TV.screen[tmp_y + i * MAX_X / 8] |= sprites[image_id][i * 2 + 1] << -8 - x_pos;
+            TV.screen[tmp_y + i * MAX_X / 8] |= pgm_read_byte(&sprites[image_id][i * 2 + 1]) << -8 - x_pos;
         }
     }
     else if (x_pos < 0) // 1개 짤림
     {
         for (int i = y_minus; i < TILE_SIZE - y_plus; i++)
         {
-            TV.screen[tmp_y + i * MAX_X / 8] |= sprites[image_id][i * 2] << -x_pos | sprites[image_id][i * 2 + 1] >> (8 + x_pos);
-            TV.screen[tmp_y + i * MAX_X / 8 + 1] |= sprites[image_id][i * 2 + 1] << -x_pos;
+            TV.screen[tmp_y + i * MAX_X / 8] |= pgm_read_byte(&sprites[image_id][i * 2]) << -x_pos | pgm_read_byte(&sprites[image_id][i * 2 + 1]) >> (8 + x_pos);
+            TV.screen[tmp_y + i * MAX_X / 8 + 1] |= pgm_read_byte(&sprites[image_id][i * 2 + 1]) << -x_pos;
         }
     }
     else if (x_pos + 8 >= MAX_X) // 2개 짤림
     {
         for (int i = y_minus; i < TILE_SIZE - y_plus; i++)
         {
-            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= sprites[image_id][i * 2] >> shift_length;
+            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= pgm_read_byte(&sprites[image_id][i * 2]) >> shift_length;
         }
     }
     else if (x_pos + 16 >= MAX_X) // 1개 짤림
     {
         for (int i = y_minus; i < TILE_SIZE - y_plus; i++)
         {
-            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= sprites[image_id][i * 2] >> shift_length;
-            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= sprites[image_id][i * 2] << (8 - shift_length) | sprites[image_id][i * 2 + 1] >> shift_length;
+            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= pgm_read_byte(&sprites[image_id][i * 2]) >> shift_length;
+            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= pgm_read_byte(&sprites[image_id][i * 2]) << (8 - shift_length) | pgm_read_byte(&sprites[image_id][i * 2 + 1]) >> shift_length;
         }
     }
     else // 안 짤림.
     {
         for (int i = y_minus; i < TILE_SIZE - y_plus; i++)
         {
-            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= sprites[image_id][i * 2] >> shift_length;
-            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= sprites[image_id][i * 2] << (8 - shift_length) | sprites[image_id][i * 2 + 1] >> shift_length;
-            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 2] |= sprites[image_id][i * 2 + 1] << (8 - shift_length);
+            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= pgm_read_byte(&sprites[image_id][i * 2]) >> shift_length;
+            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= pgm_read_byte(&sprites[image_id][i * 2]) << (8 - shift_length) | pgm_read_byte(&sprites[image_id][i * 2 + 1]) >> shift_length;
+            TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 2] |= pgm_read_byte(&sprites[image_id][i * 2 + 1]) << (8 - shift_length);
         }
     }
 }
@@ -360,14 +361,14 @@ void DecodeImg(byte image_byte, byte x_pos, byte y_pos)
     byte image_id = image_byte *= 2;
     byte image_rot = bitRead(image_byte, 0) + 2 * bitRead(image_byte, 0);
 
-    byte *image_binary = *(images + image_id);
+    byte *image_address = *(images + image_id);
 
     int tmp_y = y_pos * MAX_X / 8;
 
     for (int i = 0; i < TILE_SIZE; i++)
     {
-        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] = *(image_binary + i * 2);
-        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] = *(image_binary + i * 2 + 1);
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] = *(image_address + i * 2);
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] = *(image_address + i * 2 + 1);
     }
 }
 void beginTV() { TV.begin(_NTSC, 128, 96); }
