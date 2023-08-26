@@ -20,7 +20,7 @@ void Character::set_speed(byte px, byte frame)
 	}
 }
 
-void Character::set_move_up(byte px, byte frame)
+void Character::move_up(byte px, byte frame)
 {
 	vx = 0;
 	x_frame = 0;
@@ -28,7 +28,7 @@ void Character::set_move_up(byte px, byte frame)
 	y_frame = frame;
 	SET_DIR_BIT(state, DIR_UP);
 }
-void Character::set_move_right(byte px, byte frame)
+void Character::move_right(byte px, byte frame)
 {
 	vx = px;
 	x_frame = frame;
@@ -36,7 +36,7 @@ void Character::set_move_right(byte px, byte frame)
 	y_frame = 0;
 	SET_DIR_BIT(state, DIR_RIGHT);
 }
-void Character::set_move_down(byte px, byte frame)
+void Character::move_down(byte px, byte frame)
 {
 	vx = 0;
 	x_frame = 0;
@@ -44,7 +44,7 @@ void Character::set_move_down(byte px, byte frame)
 	y_frame = frame;
 	SET_DIR_BIT(state, DIR_DOWN);
 }
-void Character::set_move_left(byte px, byte frame)
+void Character::move_left(byte px, byte frame)
 {
 	vx = -px;
 	x_frame = frame;
@@ -66,5 +66,8 @@ void Character::render()
 void Character::next_frame()
 {
 	Sprite::next_frame();
-	SET_FRAME_BIT(state, (frame_cnt & 0b00011111) >> 3);
+	if (vx || vy && !(frame_cnt % 15))
+	{
+		SET_FRAME_BIT(state, (GET_FRAME_BIT(state) + 1) & 0b00000011);
+	}
 }

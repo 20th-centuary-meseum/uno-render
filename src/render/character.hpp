@@ -40,10 +40,12 @@ public:
 	byte state;
 
 	void set_speed(byte px, byte frame);
-	void set_move_up(byte px, byte frame);	  // (px per frame)
-	void set_move_right(byte px, byte frame); // (px per frame)
-	void set_move_down(byte px, byte frame);  // (px per frame)
-	void set_move_left(byte px, byte frame);  // (px per frame)
+
+	void move_up(byte px, byte frame);	  // (px per frame)
+	void move_right(byte px, byte frame); // (px per frame)
+	void move_down(byte px, byte frame);  // (px per frame)
+	void move_left(byte px, byte frame);  // (px per frame)
+
 	void attack();
 
 	void render();
