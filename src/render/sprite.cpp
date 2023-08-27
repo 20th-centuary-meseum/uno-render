@@ -14,12 +14,12 @@ Sprite::Sprite(byte _face_id, short _x, short _y)
 	y = _y;
 	vx = 0; // 속도의 단위는 vx px / x_frame 프레임으로 계산한다. 즉 x_frame 프레임마다 vx px 만큼 움직인다.
 	vy = 0;
-	x_frame = 0; // x_frame, y_frame이 가질 수 있는 값은 60의 약수이다. 메모리 최적화를 위해 frame_cnt를 static으로 관리하고, 60 프레임마다 0으로 세팅하기 때문이다.
-	y_frame = 0;
+	x_frame = 100; // x_frame, y_frame이 가질 수 있는 값은 60의 약수이다. 메모리 최적화를 위해 frame_cnt를 static으로 관리하고, 60 프레임마다 0으로 세팅하기 때문이다.
+	y_frame = 100;
 	face_id = _face_id;
 }
 
-void Sprite::render() { DecodeSprite(face_id * 4, x, y); }
+void Sprite::render() { DecodeSprite(face_id << 2, x, y); }
 
 void Sprite::next_frame()
 {
@@ -32,6 +32,5 @@ void Sprite::next_frame()
 	{
 		y += vy;
 	}
-
 	// % 연산은 굉장히 느림. x_frame을 2^n의 값만 가지게 한다면 시프트 연산으로 처리 가능...
 }
