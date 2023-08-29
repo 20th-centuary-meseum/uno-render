@@ -8,8 +8,13 @@ void start_app()
 	beginTV();
 	init_controller();
 
-	Character player(0, 0, 0);
-	player.set_speed(0, 100);
+	Background backround;
+	backround.set(0, 2, 1, 0);
+
+	Character player1(0, 64, 48);
+	player1.set_speed(0, 100);
+
+	Bullet *player1_bullet = 0;
 
 	unsigned long last = millis();
 	unsigned long current = millis();
@@ -20,31 +25,55 @@ void start_app()
 		if (current - last > FRAME_DELAY_MS)
 		{
 			last = millis();
-			clearTV();
+			backround.render();
+
 			Sprite::start_next_frame();
-			player.next_frame();
 
-			player.render();
+			player1.next_frame();
+			player1.render();
 
-			if (player.y < MIN_Y || player.y > MAX_Y)
+			if (player1_bullet)
 			{
-				player.y = (MIN_Y + MAX_Y) / 2;
+				player1_bullet->next_frame();
+				if (player1_bullet->frame_left == 0)
+				{
+					delete player1_bullet;
+					player1_bullet = 0;
+				}
+				player1_bullet->render();
 			}
 		}
 
 		update_controller();
 
+		if (CON_AT(con1))
+		{
+			bool atk_success = player1.attack();
+			if (atk_success && !player1_bullet)
+			{
+				player1_bullet = new Bullet(player1.x, player1.y, GET_DIR_BIT(player1.state));
+			}
+		}
+
 		if (CON_U(con1))
 		{
-			player.move_up(1, 1);
+			player1.move_up(1, 1);
 		}
 		else if (CON_D(con1))
 		{
-			player.move_down(1, 1);
+			player1.move_down(1, 1);
+		}
+		else if (CON_R(con1))
+		{
+			player1.move_right(1, 1);
+		}
+		else if (CON_L(con1))
+		{
+			player1.move_left(1, 1);
 		}
 		else
 		{
-			player.set_speed(0, 100);
+			player1.set_speed(0, 100);
 		}
 	}
 }

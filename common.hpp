@@ -26,4 +26,9 @@
 #error Invalid MAX_Y value.
 #endif
 
+#define DIR_UP 0	// y 증가, 정면
+#define DIR_RIGHT 1 // x 증가, 우측면
+#define DIR_DOWN 2	// y 감소, 후면
+#define DIR_LEFT 3	// x 감소, 좌측면
+
 #endif

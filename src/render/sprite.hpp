@@ -6,6 +6,7 @@
 class Sprite
 {
 public:
+	Sprite();
 	Sprite(byte _face_id, short _x, short _y);
 	static byte frame_cnt;
 	static void start_next_frame();

@@ -8,6 +8,7 @@ void Sprite::start_next_frame()
 	frame_cnt = frame_cnt > 59 ? 0 : frame_cnt + 1;
 }
 
+Sprite::Sprite() {}
 Sprite::Sprite(byte _face_id, short _x, short _y)
 {
 	x = _x;
@@ -19,7 +20,7 @@ Sprite::Sprite(byte _face_id, short _x, short _y)
 	face_id = _face_id;
 }
 
-void Sprite::render() { DecodeSprite(face_id << 2, x, y); }
+void Sprite::render() { DecodeSprite(face_id, x, y); }
 
 void Sprite::next_frame()
 {

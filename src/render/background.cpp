@@ -15,7 +15,7 @@ void Background::set(byte X, byte Y, byte tile_id, byte tile_rot)
 	tile_byte = tile_id << 2;
 	tile_byte += tile_rot;
 	//
-	map[Y * MAP_HEIGHT + X] = tile_byte;
+	map[Y * MAP_WIDTH + X] = tile_byte;
 }
 
 void Background::render()
