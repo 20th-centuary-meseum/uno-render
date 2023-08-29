@@ -27,9 +27,9 @@
 #include "../../common.hpp"
 #include "./sprite.hpp"
 #include "./decode_img.hpp"
-#include "./bullet.hpp"
+#include "../controller/controller.hpp"
 
-class Character : public Sprite
+class Character : public Sprite // 11 byte
 {
 public:
 	Character(byte _character_id, short _x, short _y);
@@ -38,10 +38,7 @@ public:
 
 	void set_speed(byte px, byte frame);
 
-	void move_up(byte px, byte frame);	  // (px per frame)
-	void move_right(byte px, byte frame); // (px per frame)
-	void move_down(byte px, byte frame);  // (px per frame)
-	void move_left(byte px, byte frame);  // (px per frame)
+	void move_by_controller(byte controller);
 
 	bool attack();
 

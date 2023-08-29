@@ -48,15 +48,15 @@
 #define CON1_D_PIN 2
 #define CON1_L_PIN 5
 
-#define CON2_A_PIN 15
-#define CON2_B_PIN 16
+#define CON2_A_PIN 16
+#define CON2_B_PIN 17
 
-#define CON2_AT_PIN 17
+#define CON2_AT_PIN 13
 
 #define CON2_U_PIN 11
-#define CON2_R_PIN 12
-#define CON2_D_PIN 13
-#define CON2_L_PIN 14
+#define CON2_R_PIN 14
+#define CON2_D_PIN 12
+#define CON2_L_PIN 15
 
 extern byte con1;
 extern byte con2;

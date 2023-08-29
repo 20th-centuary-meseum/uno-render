@@ -12,9 +12,12 @@ void start_app()
 	backround.set(0, 2, 1, 0);
 
 	Character player1(0, 64, 48);
+	Bullets player1_bullets;
 	player1.set_speed(0, 100);
 
-	Bullet *player1_bullet = 0;
+	Character player2(0, 0, 0);
+	Bullets player2_bullets;
+	player2.set_speed(0, 100);
 
 	unsigned long last = millis();
 	unsigned long current = millis();
@@ -30,50 +33,37 @@ void start_app()
 			Sprite::start_next_frame();
 
 			player1.next_frame();
-			player1.render();
+			player2.next_frame();
 
-			if (player1_bullet)
-			{
-				player1_bullet->next_frame();
-				if (player1_bullet->frame_left == 0)
-				{
-					delete player1_bullet;
-					player1_bullet = 0;
-				}
-				player1_bullet->render();
-			}
+			player1.render();
+			player2.render();
+
+			player1_bullets.next_frame();
+			player2_bullets.next_frame();
+
+			player1_bullets.render();
+			player2_bullets.render();
 		}
 
 		update_controller();
 
 		if (CON_AT(con1))
 		{
-			bool atk_success = player1.attack();
-			if (atk_success && !player1_bullet)
+			if (player1.attack())
 			{
-				player1_bullet = new Bullet(player1.x, player1.y, GET_DIR_BIT(player1.state));
+				player1_bullets.add_bullet(player1.x, player1.y, GET_DIR_BIT(player1.state));
 			}
 		}
 
-		if (CON_U(con1))
+		if (CON_AT(con2))
 		{
-			player1.move_up(1, 1);
+			if (player2.attack())
+			{
+				player2_bullets.add_bullet(player2.x, player2.y, GET_DIR_BIT(player2.state));
+			}
 		}
-		else if (CON_D(con1))
-		{
-			player1.move_down(1, 1);
-		}
-		else if (CON_R(con1))
-		{
-			player1.move_right(1, 1);
-		}
-		else if (CON_L(con1))
-		{
-			player1.move_left(1, 1);
-		}
-		else
-		{
-			player1.set_speed(0, 100);
-		}
+
+		player1.move_by_controller(con1);
+		player2.move_by_controller(con2);
 	}
 }

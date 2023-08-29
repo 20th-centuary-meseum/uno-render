@@ -3,7 +3,7 @@
 
 #include "../../common.hpp"
 
-class Sprite
+class Sprite // 9 byte
 {
 public:
 	Sprite();

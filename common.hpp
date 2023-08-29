@@ -31,4 +31,12 @@
 #define DIR_DOWN 2	// y 감소, 후면
 #define DIR_LEFT 3	// x 감소, 좌측면
 
+#define BULLET_FRAME_LEFT 30
+#define ATTACK_DELAY 10
+#define BULLET_MAX_NUM 4
+
+#if BULLET_FRAME_LEFT / ATTACK_DELAY > BULLET_MAX_NUM
+#error Invalid BULLET_FRAME_LEFT value.
+#endif
+
 #endif
