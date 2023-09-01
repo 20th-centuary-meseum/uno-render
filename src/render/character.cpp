@@ -90,7 +90,9 @@ void Character::next_frame() // 블록 충돌? , 투사체 충돌?
 	byte next_y = y + vy;
 
 	// ,현 xy 인덱스 + vx * q + vy * k
-	if (!(TV.screen[(next_y)*MAX_X / 8 + (next_x) / 8] ||
+	if (
+		// 장애물 충돌 조건
+		!(TV.screen[(next_y)*MAX_X / 8 + (next_x) / 8] ||
 		  TV.screen[(next_y + 15) * MAX_X / 8 + (next_x) / 8] ||
 		  TV.screen[(next_y)*MAX_X / 8 + (next_x) / 8 + 1] ||
 		  TV.screen[(next_y + 15) * MAX_X / 8 + (next_x + 1) / 8]))

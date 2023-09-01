@@ -41,6 +41,18 @@ void start_app()
 			player1_bullets.next_frame();
 			player2_bullets.next_frame();
 
+			// if (player1_bullets.bullets_crashed)
+			// {
+			// 	for (byte i = 0; i < BULLET_MAX_NUM; i++)
+			// 	{
+			// 		if (bitRead(player1_bullets.bullets_crashed, i))
+			// 		{
+			// 			delete player1_bullets.bullets[i];
+			// 			player1_bullets.bullets[i] = 0;
+			// 		}
+			// 	}
+			// }
+
 			player1_bullets.render();
 			player2_bullets.render();
 		}

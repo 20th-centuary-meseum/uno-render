@@ -4,9 +4,6 @@
 
 Bullet::Bullet(byte _x, byte _y, byte dir)
 {
-	x = _x;
-	y = _y;
-
 	switch (dir)
 	{
 	case DIR_UP:
@@ -14,24 +11,32 @@ Bullet::Bullet(byte _x, byte _y, byte dir)
 		x_frame = 100;
 		vy = BULLET_PX;
 		y_frame = BULLET_FRAME;
+		x = _x;
+		y = _y + 11;
 		break;
 	case DIR_RIGHT:
 		vx = BULLET_PX;
 		x_frame = BULLET_FRAME;
 		vy = 0;
 		y_frame = 100;
+		x = _x + 11;
+		y = _y;
 		break;
 	case DIR_DOWN:
 		vx = 0;
 		x_frame = 100;
 		vy = -BULLET_PX;
 		y_frame = BULLET_FRAME;
+		x = _x;
+		y = _y - 11;
 		break;
 	case DIR_LEFT:
 		vx = -BULLET_PX;
 		x_frame = BULLET_FRAME;
 		vy = 0;
 		y_frame = 100;
+		x = _x - 11;
+		y = _y;
 		break;
 	}
 
@@ -45,11 +50,33 @@ void Bullet::next_frame()
 	Sprite::next_frame();
 }
 
+bool Bullet::did_crash()
+{
+	return (
+		TV.get_pixel(x + 7, y + 5) ||
+		TV.get_pixel(x + 6, y + 6) ||
+		TV.get_pixel(x + 5, y + 7) ||
+
+		TV.get_pixel(x + 5, y + 8) ||
+		TV.get_pixel(x + 6, y + 9) ||
+		TV.get_pixel(x + 7, y + 10) ||
+
+		TV.get_pixel(x + 8, y + 10) ||
+		TV.get_pixel(x + 9, y + 9) ||
+		TV.get_pixel(x + 10, y + 8) ||
+
+		TV.get_pixel(x + 10, y + 7) ||
+		TV.get_pixel(x + 9, y + 6) ||
+		TV.get_pixel(x + 8, y + 5));
+}
+
+// -----------------------------------------------------
 Bullets::Bullets() : bullets{
 						 0,
 					 }
 {
 	next_bullet_idx = 0;
+	bullets_crashed = 0;
 }
 
 void Bullets::add_bullet(byte x, byte y, byte dir)
@@ -59,6 +86,7 @@ void Bullets::add_bullet(byte x, byte y, byte dir)
 
 	bullets[next_bullet_idx] = new Bullet(x, y, dir);
 	next_bullet_idx = next_bullet_idx >= BULLET_MAX_NUM - 1 ? 0 : next_bullet_idx + 1;
+	bitSetLow(bullets_crashed, next_bullet_idx);
 }
 
 void Bullets::next_frame()
@@ -73,6 +101,12 @@ void Bullets::next_frame()
 			{
 				delete bullets[i];
 				bullets[i] = 0;
+			}
+			else if (bullets[i]->did_crash())
+			{
+				delete bullets[i];
+				bullets[i] = 0;
+				// bitSetHigh(bullets_crashed, i);
 			}
 		}
 	}
