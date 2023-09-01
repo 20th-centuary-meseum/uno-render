@@ -330,6 +330,60 @@ const byte sprites[][32] PROGMEM = {
 
 };
 
+// return 값 설명
+// byte 0b00000 0  0  0
+//              UD RL FLAG
+// FLAG => 충돌 참 / 거짓
+// UD => 위쪽 / 아래쪽
+// RL => 오른쪽 / 왼쪽
+byte did_crash_img(byte image_byte, short x_pos, short y_pos)
+{
+    byte image_id = image_byte;
+
+    short tmp_y = y_pos * MAX_X / 8;
+    byte shift_length = x_pos % 8;
+    uint16_t y_minus = 0;
+    uint16_t y_plus = 0;
+
+    if (y_pos % 16 == 0)
+    {
+        for (int i = 0; i < TILE_SIZE; i++)
+        {
+            if (TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] & (pgm_read_byte(&sprites[image_id][i * 2]) >> shift_length))
+            {
+                return 1 | ((1) << 2);
+            }
+            else if (TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] & (pgm_read_byte(&sprites[image_id][i * 2]) << (8 - shift_length) | pgm_read_byte(&sprites[image_id][i * 2 + 1]) >> shift_length))
+            {
+                return 1 | ((1) << 2) | ((shift_length <= 3) << 1);
+            }
+            else if (TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 2] & (pgm_read_byte(&sprites[image_id][i * 2 + 1]) << (8 - shift_length)))
+            {
+                return 1 | ((1) << 2) | 2;
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < TILE_SIZE; i++)
+        {
+            if (TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] & (pgm_read_byte(&sprites[image_id][i * 2]) >> shift_length))
+            {
+                return 1 | ((i < 16 - y_pos % 16) << 2);
+            }
+            else if (TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] & (pgm_read_byte(&sprites[image_id][i * 2]) << (8 - shift_length) | pgm_read_byte(&sprites[image_id][i * 2 + 1]) >> shift_length))
+            {
+                return 1 | ((i < 16 - y_pos % 16) << 2) | ((shift_length <= 3) << 1);
+            }
+            else if (TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 2] & (pgm_read_byte(&sprites[image_id][i * 2 + 1]) << (8 - shift_length)))
+            {
+                return 1 | ((i < 16 - y_pos % 16) << 2) | 2;
+            }
+        }
+    }
+    return false;
+}
+
 void DecodeSprite(byte image_byte, short x_pos, short y_pos)
 {
     if (x_pos < -15 || x_pos >= TILE_SIZE * MAP_WIDTH)
@@ -407,6 +461,12 @@ void DecodeImg(byte image_byte, byte x_pos, byte y_pos)
         TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] = *(image_address + i * 2 + 1);
     }
 }
-void beginTV() { TV.begin(_NTSC, 128, 96); }
+void beginTV()
+{
+    TV.begin(_NTSC, 128, 96);
+}
 
-void clearTV() { TV.clear_screen(); }
+void clearTV()
+{
+    TV.clear_screen();
+}

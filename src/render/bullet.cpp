@@ -76,7 +76,6 @@ Bullets::Bullets() : bullets{
 					 }
 {
 	next_bullet_idx = 0;
-	bullets_crashed = 0;
 }
 
 void Bullets::add_bullet(byte x, byte y, byte dir)
@@ -86,7 +85,6 @@ void Bullets::add_bullet(byte x, byte y, byte dir)
 
 	bullets[next_bullet_idx] = new Bullet(x, y, dir);
 	next_bullet_idx = next_bullet_idx >= BULLET_MAX_NUM - 1 ? 0 : next_bullet_idx + 1;
-	bitSetLow(bullets_crashed, next_bullet_idx);
 }
 
 void Bullets::next_frame()
@@ -101,12 +99,6 @@ void Bullets::next_frame()
 			{
 				delete bullets[i];
 				bullets[i] = 0;
-			}
-			else if (bullets[i]->did_crash())
-			{
-				delete bullets[i];
-				bullets[i] = 0;
-				// bitSetHigh(bullets_crashed, i);
 			}
 		}
 	}

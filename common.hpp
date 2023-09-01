@@ -6,8 +6,8 @@
 
 #define byte uint8_t
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
-#define bitSetHigh(value, bit) ((value) | (0x01 << (bit)))
-#define bitSetLow(value, bit) ((value) & ~(0x01 << (bit)))
+#define bitSetHigh(value, bit) value = ((value) | (0x01 << (bit)))
+#define bitSetLow(value, bit) value = ((value) & ~(0x01 << (bit)))
 
 #define MAP_WIDTH 8
 #define MAP_HEIGHT 6

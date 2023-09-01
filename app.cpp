@@ -9,9 +9,16 @@ void start_app()
 	init_controller();
 
 	Background backround;
-	backround.set(0, 2, 1, 0);
 
-	Character player1(0, 64, 48);
+	backround.set(7, 0, 1, 0);
+	backround.set(3, 2, 1, 0);
+	backround.set(4, 2, 1, 0);
+	backround.set(5, 2, 1, 0);
+	backround.set(3, 3, 1, 0);
+	backround.set(4, 3, 1, 0);
+	backround.set(5, 3, 1, 0);
+
+	Character player1(0, 64, 0);
 	Bullets player1_bullets;
 	player1.set_speed(0, 100);
 
@@ -41,20 +48,39 @@ void start_app()
 			player1_bullets.next_frame();
 			player2_bullets.next_frame();
 
-			// if (player1_bullets.bullets_crashed)
-			// {
-			// 	for (byte i = 0; i < BULLET_MAX_NUM; i++)
-			// 	{
-			// 		if (bitRead(player1_bullets.bullets_crashed, i))
-			// 		{
-			// 			delete player1_bullets.bullets[i];
-			// 			player1_bullets.bullets[i] = 0;
-			// 		}
-			// 	}
-			// }
-
 			player1_bullets.render();
 			player2_bullets.render();
+
+			for (byte i = 0; i < BULLET_MAX_NUM; i++)
+			{
+				byte crash_bit = did_crash_img(player1_bullets.bullets[i]->face_id, player1_bullets.bullets[i]->x, player1_bullets.bullets[i]->y);
+				if (crash_bit)
+				{
+					if (crash_bit == 0b0000001)
+					{
+						// up-left
+						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE), (player1_bullets.bullets[i]->y / TILE_SIZE + 1), 0, 0);
+					}
+					else if (crash_bit == 0b0000011)
+					{
+						// up-right
+						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE + 1), (player1_bullets.bullets[i]->y / TILE_SIZE + 1), 0, 0);
+					}
+					else if (crash_bit == 0b0000101)
+					{
+						// down-left
+						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE), (player1_bullets.bullets[i]->y / TILE_SIZE), 0, 0);
+					}
+					else if (crash_bit == 0b0000111)
+					{
+						// down-right
+						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE + 1), (player1_bullets.bullets[i]->y / TILE_SIZE), 0, 0);
+					}
+
+					// delete player1_bullets.bullets[i];
+					// player1_bullets.bullets[i] = 0;
+				}
+			}
 		}
 
 		update_controller();

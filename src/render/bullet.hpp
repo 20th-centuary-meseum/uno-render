@@ -20,7 +20,6 @@ public:
 	byte next_bullet_idx;
 	Bullets();
 	Bullet *bullets[BULLET_MAX_NUM];
-	byte bullets_crashed;
 	void add_bullet(byte x, byte y, byte dir);
 	void next_frame();
 	void render();
