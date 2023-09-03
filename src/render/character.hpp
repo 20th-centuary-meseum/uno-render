@@ -43,7 +43,7 @@ public:
 	bool attack();
 
 	void render();
-	void next_frame();
+	void next_frame(byte *map);
 };
 
 #endif

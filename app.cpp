@@ -39,8 +39,8 @@ void start_app()
 
 			Sprite::start_next_frame();
 
-			player1.next_frame();
-			player2.next_frame();
+			player1.next_frame(backround.map);
+			player2.next_frame(backround.map);
 
 			player1.render();
 			player2.render();

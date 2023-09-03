@@ -84,18 +84,27 @@ void Character::render()
 	DecodeSprite(state, x, y);
 }
 
-void Character::next_frame() // 블록 충돌? , 투사체 충돌?
+void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 {
-	byte next_x = x + vx;
-	byte next_y = y + vy;
+	bool did_crash = false;
 
-	// ,현 xy 인덱스 + vx * q + vy * k
-	if (
-		// 장애물 충돌 조건
-		!(TV.screen[(next_y)*MAX_X / 8 + (next_x) / 8] ||
-		  TV.screen[(next_y + 15) * MAX_X / 8 + (next_x) / 8] ||
-		  TV.screen[(next_y)*MAX_X / 8 + (next_x) / 8 + 1] ||
-		  TV.screen[(next_y + 15) * MAX_X / 8 + (next_x + 1) / 8]))
+	switch (GET_DIR_BIT(state))
+	{
+	case DIR_UP:
+		did_crash = map[(y + vy + 15) / TILE_SIZE * MAP_WIDTH + x / TILE_SIZE] | map[(y + vy + 15) / TILE_SIZE * MAP_WIDTH + (x + 15) / TILE_SIZE];
+		break;
+	case DIR_RIGHT:
+		did_crash = map[y / TILE_SIZE * MAP_WIDTH + (x + vx + 15) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx + 15) / TILE_SIZE];
+		break;
+	case DIR_DOWN:
+		did_crash = map[(y + vy) / TILE_SIZE * MAP_WIDTH + x / TILE_SIZE] | map[(y + vy) / TILE_SIZE * MAP_WIDTH + (x + 15) / TILE_SIZE];
+		break;
+	case DIR_LEFT:
+		did_crash = map[y / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE];
+		break;
+	}
+
+	if (!did_crash)
 	{
 		Sprite::next_frame();
 	}
