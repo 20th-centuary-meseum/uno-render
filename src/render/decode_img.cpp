@@ -2,6 +2,9 @@
 
 #include "decode_img.hpp"
 
+#define HITBOX_CHAR 8
+#define HITBOX_BULLET 5
+
 TVout TV;
 
 byte none[32] = {0b00000000, 0b00000000,
@@ -311,7 +314,7 @@ const byte sprites[][32] PROGMEM = {
      0b01000000, 0b11111110,
      0b00000000, 0b00000000},
 
-    {0b00000000, 0b00000000, // 16
+    {0b00000000, 0b00000000, // 16 (bullet)
      0b00000000, 0b00000000,
      0b00000000, 0b00000000,
      0b00000000, 0b00000000,
@@ -323,12 +326,41 @@ const byte sprites[][32] PROGMEM = {
      0b00000011, 0b11000000,
      0b00000001, 0b10000000,
      0b00000000, 0b00000000,
+     0b00000000, 0b00000000,
+     0b00000000, 0b00000000,
+     0b00000000, 0b00000000,
+     0b00000000, 0b00000000},
+
+    {0b00000000, 0b00000000, // 17 (item1)
+     0b00000000, 0b00000000,
+     0b00000000, 0b00000000,
+     0b00000001, 0b00000000,
+     0b00000010, 0b10000000,
+     0b00000010, 0b10000000,
+     0b00001100, 0b01100000,
+     0b00010001, 0b00010000,
+     0b00001100, 0b01100000,
+     0b00000010, 0b10000000,
+     0b00000010, 0b10000000,
+     0b00000001, 0b00000000,
      0b00000000, 0b00000000,
      0b00000000, 0b00000000,
      0b00000000, 0b00000000,
      0b00000000, 0b00000000}
 
 };
+
+byte did_crash_character(byte character_x, byte character_y, byte bullet_x, byte bullet_y)
+{
+    // const HITBOX_CHAR = 8, HITBOX_BULLET = 5
+    byte res;
+    short x_dist = character_x - bullet_x;
+    short y_dist = character_y - bullet_y;
+    if ((x_dist) * (x_dist) + (y_dist) * (y_dist) > HITBOX_CHAR + HITBOX_BULLET)
+        return 255;
+    else
+        return 0;
+}
 
 // return 값 설명
 // byte 0b00000 0  0  0

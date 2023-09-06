@@ -1,5 +1,6 @@
 #include "src/render/render.hpp"
 #include "src/controller/controller.hpp"
+#include "src/utils/utils.hpp"
 
 #define FRAME_DELAY_MS 32
 
@@ -25,6 +26,11 @@ void start_app()
 	Character player2(0, 0, 0);
 	Bullets player2_bullets;
 	player2.set_speed(0, 100);
+
+	Item *items[5] = {
+		0,
+	};
+	byte item_cnt = 0;
 
 	unsigned long last = millis();
 	unsigned long current = millis();
@@ -56,30 +62,48 @@ void start_app()
 				byte crash_bit = did_crash_img(player1_bullets.bullets[i]->face_id, player1_bullets.bullets[i]->x, player1_bullets.bullets[i]->y);
 				if (crash_bit)
 				{
+					if (did_crash_character(player2.x, player2.y, player1_bullets.bullets[i]->x, player1_bullets.bullets[i]->y))
+					{
+						// 플레이어 충돌
+					}
+					// 배경 충돌
 					if (crash_bit == 0b0000001)
 					{
 						// up-left
 						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE), (player1_bullets.bullets[i]->y / TILE_SIZE + 1), 0, 0);
+						if (item_cnt < 5)
+							items[item_cnt++] = spawn_item(1, player1_bullets.bullets[i]->x / TILE_SIZE, player1_bullets.bullets[i]->y / TILE_SIZE + 1);
 					}
 					else if (crash_bit == 0b0000011)
 					{
 						// up-right
 						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE + 1), (player1_bullets.bullets[i]->y / TILE_SIZE + 1), 0, 0);
+						if (item_cnt < 5)
+							items[item_cnt++] = spawn_item(1, player1_bullets.bullets[i]->x / TILE_SIZE + 1, player1_bullets.bullets[i]->y / TILE_SIZE + 1);
 					}
 					else if (crash_bit == 0b0000101)
 					{
 						// down-left
 						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE), (player1_bullets.bullets[i]->y / TILE_SIZE), 0, 0);
+						if (item_cnt < 5)
+							items[item_cnt++] = spawn_item(1, player1_bullets.bullets[i]->x / TILE_SIZE, player1_bullets.bullets[i]->y / TILE_SIZE);
 					}
 					else if (crash_bit == 0b0000111)
 					{
 						// down-right
 						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE + 1), (player1_bullets.bullets[i]->y / TILE_SIZE), 0, 0);
+						if (item_cnt < 5)
+							items[item_cnt++] = spawn_item(1, player1_bullets.bullets[i]->x / TILE_SIZE + 1, player1_bullets.bullets[i]->y / TILE_SIZE);
 					}
 
 					// delete player1_bullets.bullets[i];
 					// player1_bullets.bullets[i] = 0;
 				}
+			}
+
+			for (byte i = 0; i < item_cnt; i++)
+			{
+				items[i]->render();
 			}
 		}
 
@@ -93,15 +117,15 @@ void start_app()
 			}
 		}
 
-		if (CON_AT(con2))
-		{
-			if (player2.attack())
-			{
-				player2_bullets.add_bullet(player2.x, player2.y, GET_DIR_BIT(player2.state));
-			}
-		}
+		// if (CON_AT(con2))
+		// {
+		// 	if (player2.attack())
+		// 	{
+		// 		player2_bullets.add_bullet(player2.x, player2.y, GET_DIR_BIT(player2.state));
+		// 	}
+		// }
 
 		player1.move_by_controller(con1);
-		player2.move_by_controller(con2);
+		// player2.move_by_controller(con2);
 	}
 }

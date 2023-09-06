@@ -10,6 +10,11 @@ Character::Character(byte _character_id, short _x, short _y) : Sprite(_character
 	SET_CHAR_BIT(state, _character_id);
 }
 
+Character *test()
+{
+	return new Character(0, 0, 0);
+}
+
 void Character::set_speed(byte px, byte frame)
 {
 	if (vx != 0)
