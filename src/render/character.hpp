@@ -29,11 +29,12 @@
 #include "./decode_img.hpp"
 #include "../controller/controller.hpp"
 
-class Character : public Sprite // 11 byte
+class Character : public Sprite // 12 byte
 {
 public:
 	Character(byte _character_id, short _x, short _y);
 	byte state;
+	byte hp;
 	byte atk_frame_cnt;
 
 	void set_speed(byte px, byte frame);

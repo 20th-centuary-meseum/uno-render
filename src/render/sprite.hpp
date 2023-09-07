@@ -19,6 +19,8 @@ public:
 	byte y_frame;
 	byte face_id;
 	void render();
+	bool is_x_in();
+	bool is_y_in();
 	void next_frame();
 };
 

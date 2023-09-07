@@ -3,7 +3,7 @@
 
 #include "./sprite.hpp"
 
-class Item : Sprite
+class Item : public Sprite
 {
 public:
     Item(byte _item_id, byte _x, byte _y);

@@ -95,7 +95,7 @@ void Bullets::next_frame()
 		if (bullets[i])
 		{
 			bullets[i]->next_frame();
-			if (bullets[i]->frame_left == 0)
+			if (bullets[i]->frame_left == 0 || !bullets[i]->is_x_in() || !bullets[i]->is_y_in())
 			{
 				delete bullets[i];
 				bullets[i] = 0;

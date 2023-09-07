@@ -1,13 +1,15 @@
 #include "./character.hpp"
 
 #define CHARACTER_PX 1
-#define CHATACTER_FRAME 1
+#define CHARACTER_FRAME 1
+#define CHARACTER_MAX_HP 6
 
 Character::Character(byte _character_id, short _x, short _y) : Sprite(_character_id, _x, _y)
 {
 	state = 0;
 	atk_frame_cnt = 0;
 	SET_CHAR_BIT(state, _character_id);
+	hp = CHARACTER_MAX_HP;
 }
 
 Character *test()
@@ -36,13 +38,13 @@ void Character::move_by_controller(byte controller)
 		vx = 0;
 		x_frame = 100;
 		vy = CHARACTER_PX;
-		y_frame = CHATACTER_FRAME;
+		y_frame = CHARACTER_FRAME;
 		SET_DIR_BIT(state, DIR_UP);
 	}
 	else if (CON_R(controller))
 	{
 		vx = CHARACTER_PX;
-		x_frame = CHATACTER_FRAME;
+		x_frame = CHARACTER_FRAME;
 		vy = 0;
 		y_frame = 100;
 		SET_DIR_BIT(state, DIR_RIGHT);
@@ -52,13 +54,13 @@ void Character::move_by_controller(byte controller)
 		vx = 0;
 		x_frame = 100;
 		vy = -CHARACTER_PX;
-		y_frame = CHATACTER_FRAME;
+		y_frame = CHARACTER_FRAME;
 		SET_DIR_BIT(state, DIR_DOWN);
 	}
 	else if (CON_L(controller))
 	{
 		vx = -CHARACTER_PX;
-		x_frame = CHATACTER_FRAME;
+		x_frame = CHARACTER_FRAME;
 		vy = 0;
 		y_frame = 100;
 		SET_DIR_BIT(state, DIR_LEFT);

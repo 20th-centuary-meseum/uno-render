@@ -39,7 +39,28 @@ byte box[32] = {0b00000000, 0b00000000,
                 0b01000000, 0b00000010,
                 0b01111111, 0b11111110,
                 0b00000000, 0b00000000};
-byte *images[] = {none, box};
+byte item[32] = {0b00000000, 0b00000000, // 17 (item1)
+                 0b00000000, 0b00000000,
+                 0b00000000, 0b00000000,
+                 0b00000001, 0b00000000,
+                 0b00000010, 0b10000000,
+                 0b00000010, 0b10000000,
+                 0b00001100, 0b01100000,
+                 0b00010001, 0b00010000,
+                 0b00001100, 0b01100000,
+                 0b00000010, 0b10000000,
+                 0b00000010, 0b10000000,
+                 0b00000001, 0b00000000,
+                 0b00000000, 0b00000000,
+                 0b00000000, 0b00000000,
+                 0b00000000, 0b00000000,
+                 0b00000000, 0b00000000};
+
+byte *images[] = {
+    none,
+    box,
+    item,
+};
 
 const byte sprites[][32] PROGMEM = {
     {0b01101000, 0b00010110, // 0
@@ -493,6 +514,23 @@ void DecodeImg(byte image_byte, byte x_pos, byte y_pos)
         TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] = *(image_address + i * 2 + 1);
     }
 }
+
+void DecodeItem(byte image_byte, byte x_pos, byte y_pos)
+{
+    byte image_id = image_byte >> 2;
+    byte image_rot = bitRead(image_byte, 0) + 2 * bitRead(image_byte, 0);
+
+    byte *image_address = *(images + image_id);
+
+    int tmp_y = y_pos * MAX_X / 8;
+
+    for (int i = 0; i < TILE_SIZE; i++)
+    {
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= *(image_address + i * 2);
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= *(image_address + i * 2 + 1);
+    }
+}
+
 void beginTV()
 {
     TV.begin(_NTSC, 128, 96);
