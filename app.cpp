@@ -11,7 +11,7 @@ void start_app()
 
 	Background backround;
 
-	backround.set(7, 0, 1, 0);
+	backround.set(7, 1, 1, 0);
 	backround.set(7, 5, 1, 0);
 	backround.set(3, 2, 1, 0);
 	backround.set(4, 2, 1, 0);
@@ -20,11 +20,11 @@ void start_app()
 	backround.set(4, 3, 1, 0);
 	backround.set(5, 3, 1, 0);
 
-	Character player1(0, 64, 0);
+	Character player1(0, 64, 16);
 	Bullets player1_bullets;
 	player1.set_speed(0, 100);
 
-	Character player2(0, 1, 1);
+	Character player2(0, 1, 16);
 	Bullets player2_bullets;
 	player2.set_speed(0, 100);
 
@@ -35,46 +35,6 @@ void start_app()
 
 	unsigned long last = millis();
 	unsigned long current = millis();
-
-	// for (byte i = 0; i < 100; i++)
-	// {
-	// 	items[item_cnt] = spawn_item(1, 0, 5);
-	// 	item_cnt++;
-	// 	items[item_cnt] = spawn_item(1, 1, 5);
-	// 	item_cnt++;
-	// 	items[item_cnt] = spawn_item(1, 2, 5);
-	// 	item_cnt++;
-	// 	items[item_cnt] = spawn_item(1, 3, 5);
-	// 	item_cnt++;
-	// 	items[item_cnt] = spawn_item(1, 4, 5);
-	// 	item_cnt++;
-
-	// 	item_cnt = 0;
-	// 	delete items[0];
-	// 	delete items[1];
-	// 	delete items[2];
-	// 	delete items[3];
-	// 	delete items[4];
-	// }
-
-	// items[item_cnt] = spawn_item(1, 0, 5);
-	// item_cnt++;
-	// items[item_cnt] = spawn_item(1, 1, 4);
-	// item_cnt++;
-	// items[item_cnt] = spawn_item(1, 2, 3);
-	// item_cnt++;
-	// items[item_cnt] = spawn_item(1, 3, 2);
-	// item_cnt++;
-	// items[item_cnt] = spawn_item(1, 4, 1);
-	// item_cnt++;
-
-	// delete items[2];
-	// items[2] = nullptr;
-	// delete items[3];
-	// items[3] = nullptr;
-
-	// items[2] = spawn_item(1, 2, 3);
-	// items[3] = spawn_item(1, 3, 2);
 
 	while (true)
 	{
@@ -177,6 +137,8 @@ void start_app()
 				if (items[i])
 					items[i]->render();
 			}
+
+			DecodeUI(player1.hp, player2.hp, 0, 0);
 		}
 
 		update_controller();

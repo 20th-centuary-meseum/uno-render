@@ -23,6 +23,7 @@ byte none[32] = {0b00000000, 0b00000000,
                  0b00000000, 0b00000000,
                  0b00000000, 0b00000000,
                  0b00000000, 0b00000000};
+
 byte box[32] = {0b00000000, 0b00000000,
                 0b01111111, 0b11111110,
                 0b01000000, 0b00000010,
@@ -56,10 +57,11 @@ byte item[32] = {0b00000000, 0b00000000, // 17 (item1)
                  0b00000000, 0b00000000,
                  0b00000000, 0b00000000};
 
-byte *images[] = {
-    none,
-    box,
-    item,
+byte *
+    images[] = {
+        none,
+        box,
+        item,
 };
 
 const byte sprites[][32] PROGMEM = {
@@ -367,20 +369,26 @@ const byte sprites[][32] PROGMEM = {
      0b00000000, 0b00000000,
      0b00000000, 0b00000000,
      0b00000000, 0b00000000,
-     0b00000000, 0b00000000}
+     0b00000000, 0b00000000}};
 
-};
+const byte ui_images[][8] PROGMEM = {{0b00000000,
+                                      0b01101100,
+                                      0b11111110,
+                                      0b11111110,
+                                      0b01111100,
+                                      0b00111000,
+                                      0b00010000,
+                                      0b00000000}};
 
-byte did_crash_character(byte character_x, byte character_y, byte bullet_x, byte bullet_y)
+bool did_crash_character(byte character_x, byte character_y, byte bullet_x, byte bullet_y)
 {
     // const HITBOX_CHAR = 8, HITBOX_BULLET = 5
-    byte res;
     short x_dist = character_x - bullet_x;
     short y_dist = character_y - bullet_y;
-    if ((x_dist) * (x_dist) + (y_dist) * (y_dist) > HITBOX_CHAR + HITBOX_BULLET)
-        return 255;
+    if ((x_dist) * (x_dist) + (y_dist) * (y_dist) <= (HITBOX_CHAR + HITBOX_BULLET) * (HITBOX_CHAR + HITBOX_BULLET))
+        return true;
     else
-        return 0;
+        return false;
 }
 
 // return 값 설명
@@ -529,6 +537,61 @@ void DecodeItem(byte image_byte, byte x_pos, byte y_pos)
         TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= *(image_address + i * 2);
         TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= *(image_address + i * 2 + 1);
     }
+}
+
+void decode_mini_img(byte x, byte y, byte *mini_img) // 8x8 이미지 렌더
+{
+    for (int i = 0; i < 8; i++)
+    {
+        TV.screen[x + (i + y * 8) * MAX_X / 8] = pgm_read_byte(mini_img + i);
+    }
+}
+
+void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item)
+{
+    byte *heart_ptr = ui_images[0];
+    // health render
+    for (int y = 0; y < (p1_health) / 5 + 1; y++) // p1
+
+    {
+        if (p1_health >= (y + 1) * 5)
+        {
+            decode_mini_img(0, y, heart_ptr);
+            decode_mini_img(1, y, heart_ptr);
+            decode_mini_img(2, y, heart_ptr);
+            decode_mini_img(3, y, heart_ptr);
+            decode_mini_img(4, y, heart_ptr);
+        }
+        else
+        {
+            for (int x = 0; x < p1_health % 5; x++)
+            {
+                decode_mini_img(x, y, heart_ptr);
+            }
+        }
+    }
+
+    for (int y = 0; y < (p2_health) / 5 + 1; y++) // p2
+    {
+        if (p2_health >= (y + 1) * 5)
+        {
+            decode_mini_img(15, y, heart_ptr);
+            decode_mini_img(14, y, heart_ptr);
+            decode_mini_img(13, y, heart_ptr);
+            decode_mini_img(12, y, heart_ptr);
+            decode_mini_img(11, y, heart_ptr);
+        }
+        else
+        {
+            for (int x = 0; x < p2_health % 5; x++)
+            {
+                decode_mini_img(15 - x, y, heart_ptr);
+            }
+        }
+    }
+    /*
+    item decode code
+    */
 }
 
 void beginTV()

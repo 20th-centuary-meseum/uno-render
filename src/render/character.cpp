@@ -2,14 +2,14 @@
 
 #define CHARACTER_PX 1
 #define CHARACTER_FRAME 1
-#define CHARACTER_MAX_HP 6
+#define CHARACTER_MAX_HP 10
 
 Character::Character(byte _character_id, short _x, short _y) : Sprite(_character_id, _x, _y)
 {
 	state = 0;
 	atk_frame_cnt = 0;
 	SET_CHAR_BIT(state, _character_id);
-	hp = CHARACTER_MAX_HP;
+	hp = CHARACTER_MAX_HP; // 음수, 최대 체력 이상 예외처리 필수!
 }
 
 Character *test()
