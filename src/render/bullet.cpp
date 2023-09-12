@@ -102,25 +102,71 @@ void Bullets::add_bullet(byte x, byte y, byte dir)
 	bullets[next_bullet_idx] = new Bullet(x, y, dir);
 	next_bullet_idx = next_bullet_idx >= BULLET_MAX_NUM - 1 ? 0 : next_bullet_idx + 1;
 }
+void Bullets::delete_bullet(byte idx)
+{
+	delete bullets[idx];
+	bullets[idx] = 0;
+}
 
-void Bullets::next_frame()
+void Bullets::next_frame(Character *player, Items *items, Background *background)
 {
 	byte i;
 	for (i = 0; i < BULLET_MAX_NUM; i++)
 	{
-		if (bullets[i])
+		if (bullets[i] == nullptr)
+			continue;
+
+		if (bullets[i]->frame_left <= 0)
 		{
-			bullets[i]->next_frame();
-			if (bullets[i]->frame_left <= 0)
-			{
-				delete bullets[i];
-				bullets[i] = 0;
-			}
-			else if (!bullets[i]->is_x_in() || !bullets[i]->is_y_in())
-			{
-				bullets[i]->frame_left = 0;
-			}
+			delete_bullet(i);
+			continue;
 		}
+
+		if (!bullets[i]->is_x_in() || !bullets[i]->is_y_in())
+		{
+			bullets[i]->frame_left = 0;
+		}
+
+		if (bullets[i]->did_crash_player(player))
+		{
+			player->hp -= 1;
+			delete_bullet(i);
+			continue;
+		}
+
+		byte crash_bit = did_crash_img(bullets[i]->face_id, bullets[i]->x, bullets[i]->y);
+		if (!crash_bit)
+			continue;
+
+		byte tile_x;
+		byte tile_y;
+		if (crash_bit == 0b0000001)
+		{
+			tile_x = bullets[i]->x / TILE_SIZE;
+			tile_y = bullets[i]->y / TILE_SIZE + 1;
+		}
+		else if (crash_bit == 0b0000011)
+		{
+			tile_x = bullets[i]->x / TILE_SIZE + 1;
+			tile_y = bullets[i]->y / TILE_SIZE + 1;
+		}
+		else if (crash_bit == 0b0000101)
+		{
+			tile_x = bullets[i]->x / TILE_SIZE;
+			tile_y = bullets[i]->y / TILE_SIZE;
+		}
+		else if (crash_bit == 0b0000111)
+		{
+			tile_x = bullets[i]->x / TILE_SIZE + 1;
+			tile_y = bullets[i]->y / TILE_SIZE;
+		}
+
+		if (background->map[tile_x + tile_y * MAP_WIDTH] >= 4)
+		{
+			background->set(tile_x, tile_y, 0, 0);
+			items->add_item(tile_x, tile_y);
+		}
+		delete_bullet(i);
 	}
 }
 

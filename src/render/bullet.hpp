@@ -4,6 +4,8 @@
 #include "./decode_img.hpp"
 #include "./sprite.hpp"
 #include "./character.hpp"
+#include "./background.hpp"
+#include "./items.hpp"
 #include "../../common.hpp"
 
 class Bullet : public Sprite // 10 byte
@@ -23,7 +25,8 @@ public:
 	Bullets();
 	Bullet *bullets[BULLET_MAX_NUM];
 	void add_bullet(byte x, byte y, byte dir);
-	void next_frame();
+	void delete_bullet(byte idx);
+	void next_frame(Character *player, Items *items, Background *background);
 	void render();
 };
 

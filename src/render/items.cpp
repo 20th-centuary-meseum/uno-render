@@ -1,6 +1,7 @@
 #include "./sprite.hpp"
 #include "./items.hpp"
 #include "./decode_img.hpp"
+#include "../utils/utils.hpp"
 
 #define ITEM_1 128
 
@@ -14,14 +15,36 @@ void Item::render()
     DecodeItem(face_id, x, y);
 }
 
-Item *spawn_item(byte key, byte x, byte y)
+Items::Items() : items{
+                     0,
+                 }
 {
-    if (key < ITEM_1)
+    item_cnt = 0;
+}
+
+void Items::add_item(byte x, byte y)
+{
+    if (item_cnt >= MAX_ITEM_NUM - 1)
+        return;
+
+    Item *new_item = nullptr;
+    if (Rand::get() < ITEM_1)
     {
-        return new Item(2, x * TILE_SIZE, y * TILE_SIZE);
+        new_item = new Item(2, x * TILE_SIZE, y * TILE_SIZE);
     }
-    else
+
+    if (new_item == nullptr)
+        return;
+
+    items[item_cnt] = new_item;
+    item_cnt++;
+}
+
+void Items::render()
+{
+    for (byte i = 0; i < 5; i++)
     {
-        return nullptr;
+        if (items[i])
+            items[i]->render();
     }
 }
