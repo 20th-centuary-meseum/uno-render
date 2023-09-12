@@ -11,6 +11,7 @@ Background::Background() : map{
 void Background::set(byte X, byte Y, byte tile_id, byte tile_rot)
 {
 	// make tile byte with id and tile_rot
+	// 000DMMRR D: 0 = 파괴 가능, 1 = 파괴불능. 블록이 사용되는 MM 맵 ID. RR: 로테이션.
 	byte tile_byte;
 	tile_byte = tile_id << 2;
 	tile_byte += tile_rot;

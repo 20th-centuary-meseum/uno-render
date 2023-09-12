@@ -74,7 +74,8 @@ void start_app()
 					else if (crash_bit == 0b0000001)
 					{
 						// up-left
-						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE), (player1_bullets.bullets[i]->y / TILE_SIZE + 1), 0, 0);
+						if (backround.map[player1_bullets.bullets[i]->x + (player1_bullets.bullets[i]->y / TILE_SIZE + 1) * MAP_WIDTH] >= 4)
+							backround.set((player1_bullets.bullets[i]->x / TILE_SIZE), (player1_bullets.bullets[i]->y / TILE_SIZE + 1), 0, 0);
 						if (item_cnt < 5)
 						{
 							items[item_cnt] = spawn_item(Rand::get(), player1_bullets.bullets[i]->x / TILE_SIZE, player1_bullets.bullets[i]->y / TILE_SIZE + 1);
@@ -87,7 +88,8 @@ void start_app()
 					else if (crash_bit == 0b0000011)
 					{
 						// up-right
-						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE + 1), (player1_bullets.bullets[i]->y / TILE_SIZE + 1), 0, 0);
+						if (backround.map[player1_bullets.bullets[i]->x + 1 + (player1_bullets.bullets[i]->y / TILE_SIZE + 1) * MAP_WIDTH] >= 4)
+							backround.set((player1_bullets.bullets[i]->x / TILE_SIZE + 1), (player1_bullets.bullets[i]->y / TILE_SIZE + 1), 0, 0);
 						if (item_cnt < 5)
 						{
 							items[item_cnt] = spawn_item(Rand::get(), player1_bullets.bullets[i]->x / TILE_SIZE + 1, player1_bullets.bullets[i]->y / TILE_SIZE + 1);
@@ -100,7 +102,8 @@ void start_app()
 					else if (crash_bit == 0b0000101)
 					{
 						// down-left
-						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE), (player1_bullets.bullets[i]->y / TILE_SIZE), 0, 0);
+						if (backround.map[player1_bullets.bullets[i]->x + (player1_bullets.bullets[i]->y / TILE_SIZE) * MAP_WIDTH] >= 4)
+							backround.set((player1_bullets.bullets[i]->x / TILE_SIZE), (player1_bullets.bullets[i]->y / TILE_SIZE), 0, 0);
 						if (item_cnt < 5)
 						{
 							items[item_cnt] = spawn_item(Rand::get(), player1_bullets.bullets[i]->x / TILE_SIZE, player1_bullets.bullets[i]->y / TILE_SIZE);
@@ -113,7 +116,8 @@ void start_app()
 					else if (crash_bit == 0b0000111)
 					{
 						// down-right
-						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE + 1), (player1_bullets.bullets[i]->y / TILE_SIZE), 0, 0);
+						if (backround.map[player1_bullets.bullets[i]->x + 1 + (player1_bullets.bullets[i]->y / TILE_SIZE) * MAP_WIDTH] >= 4)
+							backround.set((player1_bullets.bullets[i]->x / TILE_SIZE + 1), (player1_bullets.bullets[i]->y / TILE_SIZE), 0, 0);
 						if (item_cnt < 5)
 						{
 							items[item_cnt] = spawn_item(Rand::get(), player1_bullets.bullets[i]->x / TILE_SIZE + 1, player1_bullets.bullets[i]->y / TILE_SIZE);
