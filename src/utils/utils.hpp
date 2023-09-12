@@ -3,6 +3,8 @@
 
 #include "../../common.hpp"
 
+#define POW(n) (n) * (n)
+
 class Rand
 {
 public:

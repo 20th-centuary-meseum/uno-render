@@ -1,4 +1,9 @@
 #include "./bullet.hpp"
+#include "../utils/utils.hpp"
+
+#define HITBOX_CHAR 8
+#define HITBOX_BULLET 5
+
 #define BULLET_PX 3
 #define BULLET_FRAME 1
 
@@ -50,24 +55,35 @@ void Bullet::next_frame()
 	Sprite::next_frame();
 }
 
-bool Bullet::did_crash()
+bool Bullet::did_crash_background(byte *map)
 {
-	return (
-		TV.get_pixel(x + 7, y + 5) ||
-		TV.get_pixel(x + 6, y + 6) ||
-		TV.get_pixel(x + 5, y + 7) ||
+	byte x_start = x + 5;
+	byte y_start = y + 5;
 
-		TV.get_pixel(x + 5, y + 8) ||
-		TV.get_pixel(x + 6, y + 9) ||
-		TV.get_pixel(x + 7, y + 10) ||
+	if (vy > 0)
+	{
+		return map[(y + vy + 15) / TILE_SIZE * MAP_WIDTH + x / TILE_SIZE] | map[(y + vy + 15) / TILE_SIZE * MAP_WIDTH + (x + 15) / TILE_SIZE];
+	}
+	else if (vx > 0)
+	{
+		return map[y / TILE_SIZE * MAP_WIDTH + (x + vx + 15) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx + 15) / TILE_SIZE];
+	}
+	else if (vy < 0)
+	{
+		return map[(y + vy) / TILE_SIZE * MAP_WIDTH + x / TILE_SIZE] | map[(y + vy) / TILE_SIZE * MAP_WIDTH + (x + 15) / TILE_SIZE];
+	}
+	else if (vx < 0)
+	{
+		return map[y / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE];
+	}
+}
 
-		TV.get_pixel(x + 8, y + 10) ||
-		TV.get_pixel(x + 9, y + 9) ||
-		TV.get_pixel(x + 10, y + 8) ||
+bool Bullet::did_crash_player(Character *character)
+{
+	byte x_dist = character->x - x;
+	byte y_dist = character->y - y;
 
-		TV.get_pixel(x + 10, y + 7) ||
-		TV.get_pixel(x + 9, y + 6) ||
-		TV.get_pixel(x + 8, y + 5));
+	return POW(x_dist) + POW(y_dist) < POW(HITBOX_BULLET + HITBOX_CHAR);
 }
 
 // -----------------------------------------------------
@@ -95,10 +111,14 @@ void Bullets::next_frame()
 		if (bullets[i])
 		{
 			bullets[i]->next_frame();
-			if (bullets[i]->frame_left == 0 || !bullets[i]->is_x_in() || !bullets[i]->is_y_in())
+			if (bullets[i]->frame_left <= 0)
 			{
 				delete bullets[i];
 				bullets[i] = 0;
+			}
+			else if (!bullets[i]->is_x_in() || !bullets[i]->is_y_in())
+			{
+				bullets[i]->frame_left = 0;
 			}
 		}
 	}

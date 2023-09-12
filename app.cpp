@@ -64,17 +64,14 @@ void start_app()
 				byte crash_bit = did_crash_img(player1_bullets.bullets[i]->face_id, player1_bullets.bullets[i]->x, player1_bullets.bullets[i]->y);
 				if (crash_bit)
 				{
-					// if (did_crash_character(player2.x, player2.y, player1_bullets.bullets[i]->x, player1_bullets.bullets[i]->y))
-					// {
-					// 	if (item_cnt < 5)
-					// 	{
-					// 		items[item_cnt] = spawn_item(Rand::get(), player1_bullets.bullets[i]->x / TILE_SIZE, player1_bullets.bullets[i]->y / TILE_SIZE);
-					// 		item_cnt++;
-					// 	}
-					// 	player2.hp -= 1;
-					// }
+					if (player1_bullets.bullets[i]->did_crash_player(&player2))
+					{
+						player2.hp -= 1;
+						delete player1_bullets.bullets[i];
+						player1_bullets.bullets[i] = 0;
+					}
 					// 배경 충돌
-					if (crash_bit == 0b0000001)
+					else if (crash_bit == 0b0000001)
 					{
 						// up-left
 						backround.set((player1_bullets.bullets[i]->x / TILE_SIZE), (player1_bullets.bullets[i]->y / TILE_SIZE + 1), 0, 0);
