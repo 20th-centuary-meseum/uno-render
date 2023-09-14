@@ -14,7 +14,7 @@ public:
 	Bullet(byte _x, byte _y, byte dir);
 	byte frame_left;
 	void next_frame();
-	bool did_crash_background(byte *map);
+	byte did_crash_background(byte *map);
 	bool did_crash_player(Character *character);
 };
 

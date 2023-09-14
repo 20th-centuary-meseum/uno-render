@@ -11,14 +11,14 @@ void start_app()
 
 	Background background;
 
-	background.set(7, 1, 1, 0);
+	background.set(7, 1, 5, 0);
 	background.set(7, 5, 1, 0);
 	background.set(3, 2, 1, 0);
 	background.set(4, 2, 1, 0);
 	background.set(5, 2, 1, 0);
 	background.set(3, 3, 1, 0);
 	background.set(4, 3, 1, 0);
-	background.set(5, 3, 1, 0);
+	background.set(5, 3, 5, 0);
 
 	Character player1(0, 64, 16);
 	Bullets player1_bullets;
