@@ -53,6 +53,9 @@ void start_app()
 			player1_bullets.next_frame(&player2, &items, &background);
 			player2_bullets.next_frame(&player1, &items, &background);
 
+			player1.get_item_if_crashed(items);
+			player2.get_item_if_crashed(items);
+
 			player1_bullets.render();
 			player2_bullets.render();
 

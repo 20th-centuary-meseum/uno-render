@@ -24,10 +24,13 @@
 #define SET_FRAME_BIT(state, frame) state = (state & 0b11111100) | frame
 #define GET_FRAME_BIT(state) state = (state & 0b00000011)
 
+#define MAX_POSSESS_ITEM 2
+
 #include "../../common.hpp"
 #include "./sprite.hpp"
 #include "./decode_img.hpp"
 #include "../controller/controller.hpp"
+#include "./items.hpp"
 
 class Character : public Sprite // 12 byte
 {
@@ -36,12 +39,16 @@ public:
 	byte state;
 	byte hp;
 	byte atk_frame_cnt;
+	byte possess_items[MAX_POSSESS_ITEM];
+	byte next_possess_item_idx;
 
 	void set_speed(byte px, byte frame);
 
 	void move_by_controller(byte controller);
 
 	bool attack();
+
+	void get_item_if_crashed(Items &items);
 
 	void render();
 	void next_frame(byte *map);

@@ -22,6 +22,11 @@ Items::Items() : items{
     item_cnt = 0;
 }
 
+Item *Items::operator[](byte i)
+{
+    return items[i];
+}
+
 void Items::add_item(byte x, byte y)
 {
     if (item_cnt >= MAX_ITEM_NUM - 1)
@@ -38,6 +43,12 @@ void Items::add_item(byte x, byte y)
 
     items[item_cnt] = new_item;
     item_cnt++;
+}
+
+void Items::delete_item(byte idx)
+{
+    delete items[idx];
+    items[idx] = nullptr;
 }
 
 void Items::render()

@@ -15,12 +15,14 @@ class Items
 {
 public:
     Items();
+    Item *operator[](byte i);
     Item *items[MAX_ITEM_NUM];
     byte item_cnt;
     void add_item(byte x, byte y);
+    void delete_item(byte idx);
     void render();
 };
 
 Item *spawn_item(byte key, byte x, byte y);
 
-#endif ITEMS_H
+#endif

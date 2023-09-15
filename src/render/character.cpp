@@ -4,12 +4,15 @@
 #define CHARACTER_FRAME 1
 #define CHARACTER_MAX_HP 10
 
-Character::Character(byte _character_id, short _x, short _y) : Sprite(_character_id, _x, _y)
+Character::Character(byte _character_id, short _x, short _y) : Sprite(_character_id, _x, _y), possess_items{
+																								  0,
+																							  }
 {
 	state = 0;
 	atk_frame_cnt = 0;
 	SET_CHAR_BIT(state, _character_id);
 	hp = CHARACTER_MAX_HP; // 음수, 최대 체력 이상 예외처리 필수!
+	next_possess_item_idx = 0;
 }
 
 Character *test()
@@ -84,6 +87,22 @@ bool Character::attack()
 	SET_ATK_BIT(state, true);
 	atk_frame_cnt = ATTACK_DELAY;
 	return true;
+}
+
+void Character::get_item_if_crashed(Items &items)
+{
+	if (possess_items[next_possess_item_idx] != 0)
+		return;
+
+	for (byte i = 0; i < MAX_POSSESS_ITEM; i++)
+	{
+		if (items[i]->x - x < 8 && items[i]->y - y < 8)
+		{
+			possess_items[next_possess_item_idx] = items[i]->face_id;
+			next_possess_item_idx = next_possess_item_idx + 1 >= MAX_POSSESS_ITEM ? 0 : next_possess_item_idx + 1;
+			items.delete_item(i);
+		}
+	}
 }
 
 void Character::render()
