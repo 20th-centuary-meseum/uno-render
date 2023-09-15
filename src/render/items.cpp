@@ -35,7 +35,7 @@ void Items::add_item(byte x, byte y)
     Item *new_item = nullptr;
     if (Rand::get() < ITEM_1)
     {
-        new_item = new Item(2, x * TILE_SIZE, y * TILE_SIZE);
+        new_item = new Item(0, x * TILE_SIZE, y * TILE_SIZE);
     }
 
     if (new_item == nullptr)

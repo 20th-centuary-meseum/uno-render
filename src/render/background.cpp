@@ -25,7 +25,7 @@ void Background::render()
 	{
 		for (byte y = 0; y < MAP_HEIGHT; y++)
 		{
-			DecodeImg(map[y * MAP_WIDTH + x], x * 16, y * 16);
+			DecodeTile(map[y * MAP_WIDTH + x], x * 16, y * 16);
 		}
 	}
 }
