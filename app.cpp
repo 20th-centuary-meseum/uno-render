@@ -11,20 +11,19 @@ void start_app()
 
 	Background background;
 
-	background.set(7, 1, 5, 0);
-	background.set(7, 5, 1, 0);
-	background.set(3, 2, 1, 0);
-	background.set(4, 2, 1, 0);
-	background.set(5, 2, 1, 0);
-	background.set(3, 3, 1, 0);
-	background.set(4, 3, 1, 0);
-	background.set(5, 3, 5, 0);
+	for (byte i = 2; i < MAP_HEIGHT - 1; i++)
+	{
+		for (byte j = 2; j < MAP_WIDTH - 1; j++)
+		{
+			background.set(j, i, 1, 0);
+		}
+	}
 
-	Character player1(0, 64, 16);
+	Character player1(0, 1, 16);
 	Bullets player1_bullets;
 	player1.set_speed(0, 100);
 
-	Character player2(0, 1, 16);
+	Character player2(1, MAX_X - 16, MAX_Y - 16);
 	Bullets player2_bullets;
 	player2.set_speed(0, 100);
 
@@ -61,7 +60,7 @@ void start_app()
 
 			items.render();
 
-			DecodeUI(player1.hp, player2.hp, 0, 0);
+			DecodeUI(player1.hp, player2.hp, player1.possess_item_id, player2.possess_item_id);
 		}
 
 		update_controller();
@@ -73,6 +72,10 @@ void start_app()
 				player1_bullets.add_bullet(player1.x, player1.y, GET_DIR_BIT(player1.state));
 			}
 		}
+		else if (CON_A(con1))
+		{
+			// player1.use_item();
+		}
 
 		if (CON_AT(con2))
 		{
@@ -80,6 +83,10 @@ void start_app()
 			{
 				player2_bullets.add_bullet(player2.x, player2.y, GET_DIR_BIT(player2.state));
 			}
+		}
+		else if (CON_A(con2))
+		{
+			// player2.use_item();
 		}
 
 		player1.move_by_controller(con1);

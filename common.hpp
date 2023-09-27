@@ -26,8 +26,14 @@
 #define DIR_LEFT 3	// x 감소, 좌측면
 
 #define BULLET_FRAME_LEFT 30
-#define ATTACK_DELAY 10
+#define ATTACK_DELAY 30
 #define BULLET_MAX_NUM 4
+
+#define ITEM_HEAL 1
+#define ITEM_SHLD 2
+#define ITEM_DASH 3
+#define ITEM_SPED 4
+#define ITEM_DAMG 5
 
 #if BULLET_FRAME_LEFT / ATTACK_DELAY > BULLET_MAX_NUM
 #error Invalid BULLET_FRAME_LEFT value.

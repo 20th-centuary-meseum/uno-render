@@ -3,12 +3,7 @@
 #include "./decode_img.hpp"
 #include "../utils/utils.hpp"
 
-#define ITEM_1 128
-
-Item::Item(byte _item_id, byte _x, byte _y) : Sprite(_item_id, _x, _y)
-{
-    face_id <<= 2;
-}
+Item::Item(byte _item_id, byte _x, byte _y) : Sprite(_item_id, _x, _y) {}
 
 void Item::render()
 {
@@ -33,10 +28,19 @@ void Items::add_item(byte x, byte y)
         return;
 
     Item *new_item = nullptr;
-    if (Rand::get() < ITEM_1)
-    {
-        new_item = new Item(0, x * TILE_SIZE, y * TILE_SIZE);
-    }
+
+    byte seed = Rand::get();
+    // 0 ~ 256
+    if (seed < 50)
+        new_item = new Item(ITEM_HEAL, x * TILE_SIZE, y * TILE_SIZE);
+    else if (seed < 100)
+        new_item = new Item(ITEM_SHLD, x * TILE_SIZE, y * TILE_SIZE);
+    else if (seed < 150)
+        new_item = new Item(ITEM_DASH, x * TILE_SIZE, y * TILE_SIZE);
+    else if (seed < 200)
+        new_item = new Item(ITEM_SPED, x * TILE_SIZE, y * TILE_SIZE);
+    else if (seed < 250)
+        new_item = new Item(ITEM_DAMG, x * TILE_SIZE, y * TILE_SIZE);
 
     if (new_item == nullptr)
         return;

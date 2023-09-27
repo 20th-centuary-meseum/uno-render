@@ -39,8 +39,7 @@ public:
 	byte state;
 	byte hp;
 	byte atk_frame_cnt;
-	byte possess_items[MAX_POSSESS_ITEM];
-	byte next_possess_item_idx;
+	byte possess_item_id;
 
 	void set_speed(byte px, byte frame);
 
@@ -49,6 +48,7 @@ public:
 	bool attack();
 
 	void get_item_if_crashed(Items &items);
+	byte use_item();
 
 	void render();
 	void next_frame(byte *map);

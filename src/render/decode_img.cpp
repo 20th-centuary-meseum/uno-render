@@ -86,19 +86,16 @@ void DecodeTile(byte image_byte, byte x_pos, byte y_pos)
     }
 }
 
-void DecodeItem(byte image_byte, byte x_pos, byte y_pos)
+void DecodeItem(byte image_id, byte x_pos, byte y_pos)
 {
-    byte image_id = image_byte >> 2;
-    byte image_rot = bitRead(image_byte, 0) + 2 * bitRead(image_byte, 0);
-
-    byte *image_address = *(item_imgs + image_id);
+    byte *image_address = *(item_imgs + image_id - 1);
 
     int tmp_y = y_pos * MAX_X / 8;
 
     for (int i = 0; i < TILE_SIZE; i++)
     {
-        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= *(image_address + i * 2);
-        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= *(image_address + i * 2 + 1);
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= pgm_read_byte(image_address + i * 2);
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= pgm_read_byte(image_address + i * 2 + 1);
     }
 }
 
@@ -152,9 +149,10 @@ void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item)
             }
         }
     }
-    /*
-    item decode code
-    */
+    if (p1_item)
+        DecodeItem(p1_item, 40, 0);
+    if (p2_item)
+        DecodeItem(p2_item, 72, 0);
 }
 
 void beginTV()

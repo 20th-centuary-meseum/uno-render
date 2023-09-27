@@ -1,18 +1,16 @@
 #include "./character.hpp"
 
-#define CHARACTER_PX 1
+#define CHARACTER_PX 2
 #define CHARACTER_FRAME 1
 #define CHARACTER_MAX_HP 10
 
-Character::Character(byte _character_id, short _x, short _y) : Sprite(_character_id, _x, _y), possess_items{
-																								  0,
-																							  }
+Character::Character(byte _character_id, short _x, short _y) : Sprite(_character_id, _x, _y)
 {
 	state = 0;
 	atk_frame_cnt = 0;
 	SET_CHAR_BIT(state, _character_id);
 	hp = CHARACTER_MAX_HP; // 음수, 최대 체력 이상 예외처리 필수!
-	next_possess_item_idx = 0;
+	possess_item_id = 0;
 }
 
 Character *test()
@@ -91,18 +89,24 @@ bool Character::attack()
 
 void Character::get_item_if_crashed(Items &items)
 {
-	if (possess_items[next_possess_item_idx] != 0)
+	if (possess_item_id != 0)
 		return;
 
 	for (byte i = 0; i < MAX_POSSESS_ITEM; i++)
 	{
-		if (items[i]->x - x < 8 && items[i]->y - y < 8)
+		if (abs(items[i]->x - x) < 8 && abs(items[i]->y - y) < 8)
 		{
-			possess_items[next_possess_item_idx] = items[i]->face_id;
-			next_possess_item_idx = next_possess_item_idx + 1 >= MAX_POSSESS_ITEM ? 0 : next_possess_item_idx + 1;
+			possess_item_id = items[i]->face_id;
 			items.delete_item(i);
 		}
 	}
+}
+
+byte Character::use_item()
+{
+	byte tmp = possess_item_id;
+	possess_item_id = 0;
+	return tmp;
 }
 
 void Character::render()
@@ -147,8 +151,13 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 
 	// 일정 프레임마다 모션변경
 	// 상태, -> 투사체 충돌 결과 필요
-	if (vx || vy && !(frame_cnt % 15))
+	if (vx || vy)
 	{
-		SET_FRAME_BIT(state, (GET_FRAME_BIT(state) + 1) & 0b00000011);
+		if (!(frame_cnt % 6))
+			SET_FRAME_BIT(state, (GET_FRAME_BIT(state) + 1) & 0b00000011);
+	}
+	else
+	{
+		SET_FRAME_BIT(state, 0);
 	}
 }
