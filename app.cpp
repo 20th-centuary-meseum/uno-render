@@ -64,25 +64,26 @@ void start_app()
 		}
 
 		update_controller();
-
-		// if (CON_A(con1))
-		// {
-		// 	if (player1.attack())
-		// 	{
-		// 		player1_bullets.add_bullet(player1.x, player1.y, GET_DIR_BIT(player1.state));
-		// 	}
-		// } else
 		if (CON_AT(con1))
 		{
-			player1.use_item();
+			if (player1.attack())
+			{
+				player1_bullets.add_bullet(player1.x, player1.y, GET_DIR_BIT(player1.state));
+			}
+		}
+		else if (CON_A(con1))
+		{
+			// player1.use_item();
 		}
 
 		if (CON_AT(con2))
 		{
-			if (player2.attack())
-			{
-				player2_bullets.add_bullet(player2.x, player2.y, GET_DIR_BIT(player2.state));
-			}
+			player1.use_item();
+
+			// if (player2.attack())
+			// {
+			// 	player2_bullets.add_bullet(player2.x, player2.y, GET_DIR_BIT(player2.state));
+			// }
 		}
 		else if (CON_A(con2))
 		{

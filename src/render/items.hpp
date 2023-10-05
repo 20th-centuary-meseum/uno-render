@@ -10,7 +10,6 @@ class Item : public Sprite
 {
 public:
     Item(byte _item_id, byte _x, byte _y);
-    static void use(byte item_id, Character &player_used);
     void render();
 };
 

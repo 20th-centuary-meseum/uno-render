@@ -11,6 +11,8 @@ Character::Character(byte _character_id, short _x, short _y) : Sprite(_character
 	SET_CHAR_BIT(state, _character_id);
 	hp = CHARACTER_MAX_HP - 5; // 음수, 최대 체력 이상 예외처리 필수!
 	possess_item_id = 0;
+	using_item_id = 0;
+	using_item_frame_cnt = 0; // frame update, 모션 타이머 조작할 때 같이 줄이자!
 }
 
 Character *test()
@@ -104,13 +106,44 @@ void Character::get_item_if_crashed(Items &items)
 
 void Character::use_item()
 {
-	Item::use(possess_item_id, *this);
+	if (using_item_id)
+		return;
+
+	switch (possess_item_id)
+	{
+	case ITEM_HEAL:
+		using_item_frame_cnt = 60;
+		hp += 2;
+		if (hp > 10)
+			hp = 10;
+		break;
+	case ITEM_SHLD:
+
+		break;
+	case ITEM_DASH:
+
+		break;
+	case ITEM_SPED:
+		// 재광이형
+		break;
+	case ITEM_DAMG:
+		// 재광이형
+		break;
+
+	default:
+		break;
+	}
+	using_item_id = possess_item_id;
 	possess_item_id = 0;
 }
 
 void Character::render()
 {
 	DecodeSprite(state, x, y);
+	if (using_item_id)
+	{
+		DecodeSpriteItem(using_item_id, x, y - 12);
+	}
 }
 
 void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
@@ -158,5 +191,14 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 	else
 	{
 		SET_FRAME_BIT(state, 0);
+	}
+
+	if (using_item_id)
+	{
+		using_item_frame_cnt -= 1;
+		if (using_item_frame_cnt == 0)
+		{
+			using_item_id = 0;
+		}
 	}
 }

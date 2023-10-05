@@ -40,6 +40,8 @@ public:
 	byte hp;
 	byte atk_frame_cnt;
 	byte possess_item_id;
+	byte using_item_id;
+	byte using_item_frame_cnt;
 
 	void set_speed(byte px, byte frame);
 
