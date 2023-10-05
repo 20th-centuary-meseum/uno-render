@@ -1,7 +1,31 @@
 #include "./sprite.hpp"
 #include "./items.hpp"
+#include "./character.hpp"
 #include "./decode_img.hpp"
 #include "../utils/utils.hpp"
+
+static void Item::use(byte item_id, Character &player_used)
+{
+    switch (item_id)
+    {
+    case ITEM_HEAL:
+        player_used.hp += 2;
+        if (player_used.hp > 10)
+            player_used.hp = 10;
+        break;
+    case ITEM_SHLD:
+        break;
+    case ITEM_DASH:
+        break;
+    case ITEM_SPED:
+        break;
+    case ITEM_DAMG:
+        break;
+
+    default:
+        break;
+    }
+}
 
 Item::Item(byte _item_id, byte _x, byte _y) : Sprite(_item_id, _x, _y) {}
 

@@ -9,7 +9,7 @@ Character::Character(byte _character_id, short _x, short _y) : Sprite(_character
 	state = 0;
 	atk_frame_cnt = 0;
 	SET_CHAR_BIT(state, _character_id);
-	hp = CHARACTER_MAX_HP; // 음수, 최대 체력 이상 예외처리 필수!
+	hp = CHARACTER_MAX_HP - 5; // 음수, 최대 체력 이상 예외처리 필수!
 	possess_item_id = 0;
 }
 
@@ -102,11 +102,10 @@ void Character::get_item_if_crashed(Items &items)
 	}
 }
 
-byte Character::use_item()
+void Character::use_item()
 {
-	byte tmp = possess_item_id;
+	Item::use(possess_item_id, *this);
 	possess_item_id = 0;
-	return tmp;
 }
 
 void Character::render()

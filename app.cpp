@@ -65,16 +65,16 @@ void start_app()
 
 		update_controller();
 
+		// if (CON_A(con1))
+		// {
+		// 	if (player1.attack())
+		// 	{
+		// 		player1_bullets.add_bullet(player1.x, player1.y, GET_DIR_BIT(player1.state));
+		// 	}
+		// } else
 		if (CON_AT(con1))
 		{
-			if (player1.attack())
-			{
-				player1_bullets.add_bullet(player1.x, player1.y, GET_DIR_BIT(player1.state));
-			}
-		}
-		else if (CON_A(con1))
-		{
-			// player1.use_item();
+			player1.use_item();
 		}
 
 		if (CON_AT(con2))

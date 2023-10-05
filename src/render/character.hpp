@@ -48,7 +48,7 @@ public:
 	bool attack();
 
 	void get_item_if_crashed(Items &items);
-	byte use_item();
+	void use_item();
 
 	void render();
 	void next_frame(byte *map);
