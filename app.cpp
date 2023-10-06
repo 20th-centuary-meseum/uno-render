@@ -64,19 +64,19 @@ void start_app()
 		}
 
 		update_controller();
-		if (CON_AT(con1))
+		if (CON_X(con1))
 		{
 			if (player1.attack())
 			{
 				player1_bullets.add_bullet(player1.x, player1.y, GET_DIR_BIT(player1.state));
 			}
 		}
-		else if (CON_A(con1))
+		else if (CON_Y(con1))
 		{
 			// player1.use_item();
 		}
 
-		if (CON_AT(con2))
+		if (CON_X(con2))
 		{
 			player1.use_item();
 
@@ -85,7 +85,7 @@ void start_app()
 			// 	player2_bullets.add_bullet(player2.x, player2.y, GET_DIR_BIT(player2.state));
 			// }
 		}
-		else if (CON_A(con2))
+		else if (CON_Y(con2))
 		{
 			// player2.use_item();
 		}
