@@ -27,12 +27,12 @@ void Sprite::render()
 
 bool Sprite::is_x_in()
 {
-	return x + vx >= MIN_X && x + vx < MAX_X - 15;
+	return x + vx >= MIN_X && x + vx < MAX_X - 14;
 }
 
 bool Sprite::is_y_in()
 {
-	return y + vy >= MIN_Y && y + vy < MAX_Y - 15;
+	return y + vy >= MIN_Y && y + vy < MAX_Y - 14;
 }
 
 void Sprite::next_frame()
