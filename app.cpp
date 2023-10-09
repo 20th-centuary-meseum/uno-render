@@ -49,8 +49,8 @@ void start_app()
 			player1.render();
 			player2.render();
 
-			player1_bullets.next_frame(&player2, &items, &background);
-			player2_bullets.next_frame(&player1, &items, &background);
+			player1_bullets.next_frame(&player2, &player1, &items, &background);
+			player2_bullets.next_frame(&player1, &player2, &items, &background);
 
 			player1.get_item_if_crashed(items);
 			player2.get_item_if_crashed(items);
@@ -61,6 +61,7 @@ void start_app()
 			items.render();
 
 			DecodeUI(player1.hp, player2.hp, player1.possess_item_id, player2.possess_item_id);
+			// reset_velocity()
 		}
 
 		update_controller();
@@ -73,21 +74,19 @@ void start_app()
 		}
 		else if (CON_Y(con1))
 		{
-			// player1.use_item();
+			player1.use_item();
 		}
 
 		if (CON_X(con2))
 		{
-			player1.use_item();
-
-			// if (player2.attack())
-			// {
-			// 	player2_bullets.add_bullet(player2.x, player2.y, GET_DIR_BIT(player2.state));
-			// }
+			if (player2.attack())
+			{
+				player2_bullets.add_bullet(player2.x, player2.y, GET_DIR_BIT(player2.state));
+			}
 		}
 		else if (CON_Y(con2))
 		{
-			// player2.use_item();
+			player2.use_item();
 		}
 
 		player1.move_by_controller(con1);

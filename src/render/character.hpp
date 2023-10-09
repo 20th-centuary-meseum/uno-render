@@ -42,6 +42,7 @@ public:
 	byte possess_item_id;
 	byte using_item_id;
 	byte using_item_frame_cnt;
+	byte atk_dmg;
 
 	void set_speed(byte px, byte frame);
 
@@ -54,6 +55,8 @@ public:
 
 	void render();
 	void next_frame(byte *map);
+
+	void damage(byte atk);
 };
 
 #endif

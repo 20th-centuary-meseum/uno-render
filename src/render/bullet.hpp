@@ -26,7 +26,7 @@ public:
 	Bullet *bullets[BULLET_MAX_NUM];
 	void add_bullet(byte x, byte y, byte dir);
 	void delete_bullet(byte idx);
-	void next_frame(Character *player, Items *items, Background *background);
+	void next_frame(Character *player_vict, Character *player_owner, Items *items, Background *background);
 	void render();
 };
 
