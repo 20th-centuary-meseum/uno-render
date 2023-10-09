@@ -36,26 +36,40 @@ void update_controller()
 {
 	// Latch for 12us
 	digitalWrite(DATA_LATCH_1, HIGH);
-	digitalWrite(DATA_LATCH_2, HIGH);
 	delayMicroseconds(12);
 	digitalWrite(DATA_LATCH_1, LOW);
-	digitalWrite(DATA_LATCH_2, LOW);
 	delayMicroseconds(6);
 
 	// Retrieve button presses from shift register by pulling the clock high for 6us
 	con1 = 0;
-	con2 = 0;
 	for (int i = 0; i < 16; i++)
 	{
 		digitalWrite(DATA_CLOCK_1, LOW);
+		delayMicroseconds(6);
+		if (i <= 11)
+		{
+			con1 |= (!digitalRead(DATA_SERIAL_1)) << i;
+		}
+		digitalWrite(DATA_CLOCK_1, HIGH);
+		delayMicroseconds(6);
+	}
+
+	// Latch for 12us
+	digitalWrite(DATA_LATCH_2, HIGH);
+	delayMicroseconds(12);
+	digitalWrite(DATA_LATCH_2, LOW);
+	delayMicroseconds(6);
+
+	// Retrieve button presses from shift register by pulling the clock high for 6us
+	con2 = 0;
+	for (int i = 0; i < 16; i++)
+	{
 		digitalWrite(DATA_CLOCK_2, LOW);
 		delayMicroseconds(6);
 		if (i <= 11)
 		{
-			con1 |= digitalRead(DATA_SERIAL_1) << i;
-			con2 |= digitalRead(DATA_SERIAL_2) << i;
+			con2 |= (!digitalRead(DATA_SERIAL_2)) << i;
 		}
-		digitalWrite(DATA_CLOCK_1, HIGH);
 		digitalWrite(DATA_CLOCK_2, HIGH);
 		delayMicroseconds(6);
 	}

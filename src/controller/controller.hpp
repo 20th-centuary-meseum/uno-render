@@ -34,10 +34,10 @@
 #define DATA_LATCH_1 15
 #define DATA_SERIAL_1 16
 
-#define POWER_2 2
-#define DATA_CLOCK_2 17
-#define DATA_LATCH_2 18
-#define DATA_SERIAL_2 19
+#define POWER_2 5
+#define DATA_CLOCK_2 4
+#define DATA_LATCH_2 3
+#define DATA_SERIAL_2 2
 
 extern uint16_t con1;
 extern uint16_t con2;
