@@ -119,7 +119,7 @@ void Character::use_item()
 			hp = 10;
 		break;
 	case ITEM_SHLD:
-
+		using_item_frame_cnt = 120;
 		break;
 	case ITEM_DASH:
 
@@ -154,6 +154,7 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 	bool did_crash = false;
 	if (using_item_id == ITEM_SPED)
 	{
+		// move_by_controller에서 매 프레임마다 초기화 해줌.
 		vx *= 2;
 		vy *= 2;
 	}
@@ -213,8 +214,11 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 
 void Character::damage(byte atk)
 {
-	hp -= atk;
-	if (hp < 0)
-		hp = 0;
+	if (using_item_id != ITEM_SHLD)
+	{
+		hp -= atk;
+		if (hp < 0)
+			hp = 0;
+	}
 	return;
 }
