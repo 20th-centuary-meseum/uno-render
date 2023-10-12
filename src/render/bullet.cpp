@@ -57,6 +57,11 @@ void Bullet::next_frame()
 	Sprite::next_frame();
 }
 
+void Bullet::render()
+{
+	DecodeBullet(x, y);
+}
+
 // return 값 설명
 // byte 0b 0000 0000
 //         x좌표 y좌표

@@ -16,6 +16,7 @@ public:
 	void next_frame();
 	byte did_crash_background(byte *map);
 	bool did_crash_player(Character *character);
+	void render();
 };
 
 class Bullets // 9 byte
