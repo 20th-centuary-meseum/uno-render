@@ -138,8 +138,8 @@ void DecodeTile(byte image_byte, byte x_pos, byte y_pos)
 
     for (int i = 0; i < TILE_SIZE; i++)
     {
-        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] = *(image_address + i * 2);
-        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] = *(image_address + i * 2 + 1);
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] = pgm_read_byte(image_address + i * 2);
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] = pgm_read_byte(image_address + i * 2 + 1);
     }
 }
 
