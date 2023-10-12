@@ -8,10 +8,10 @@
 #define X_BIT 9
 #define Y_BIT 1
 
-#define U_BIT 4
-#define R_BIT 5
-#define D_BIT 6
-#define L_BIT 7
+#define U_BIT 5
+#define R_BIT 7
+#define D_BIT 4
+#define L_BIT 6
 
 #define SELECT_BIT 2
 #define START_BIT 3

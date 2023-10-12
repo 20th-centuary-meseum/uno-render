@@ -9,7 +9,7 @@ void init_controller()
 	pinMode(POWER_1, OUTPUT);
 	digitalWrite(POWER_1, OUTPUT);
 	pinMode(POWER_2, OUTPUT);
-	digitalWrite(POWER_1, OUTPUT);
+	digitalWrite(POWER_2, OUTPUT);
 
 	// Set DATA_CLOCK normally HIGH
 	pinMode(DATA_CLOCK_1, OUTPUT);
