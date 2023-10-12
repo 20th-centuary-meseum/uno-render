@@ -122,11 +122,10 @@ void Character::use_item()
 		using_item_frame_cnt = 120;
 		break;
 	case ITEM_DASH:
-
+		using_item_frame_cnt = 1;
 		break;
 	case ITEM_SPED:
 		using_item_frame_cnt = 120;
-		// 재광이형
 		break;
 	case ITEM_DAMG:
 		using_item_frame_cnt = 120;
@@ -158,6 +157,12 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		vx *= 2;
 		vy *= 2;
 	}
+	else if (using_item_id == ITEM_DASH)
+	{
+		// 2 * 12 = 24 = 16 * 1.5, 1.5칸 대쉬.
+		vx *= 12;
+		vy *= 12;
+	}
 
 	switch (GET_DIR_BIT(state))
 	{
@@ -174,7 +179,25 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		did_crash = map[y / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE];
 		break;
 	}
-	if (!did_crash)
+	if (did_crash || !(is_x_in() && is_y_in()))
+	{
+		switch (GET_DIR_BIT(state))
+		{
+		case DIR_UP:
+			y = (y + vy) / TILE_SIZE;
+			break;
+		case DIR_RIGHT:
+			x = (x + vx) / TILE_SIZE;
+			break;
+		case DIR_DOWN:
+			y = (y + vy - 15) / TILE_SIZE;
+			break;
+		case DIR_LEFT:
+			x = (x + vx - 15) / TILE_SIZE;
+			break;
+		}
+	}
+	else
 	{
 		Sprite::next_frame();
 	}
