@@ -184,16 +184,16 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		switch (GET_DIR_BIT(state))
 		{
 		case DIR_UP:
-			y = (y + vy) / TILE_SIZE;
+			y = (y + vy) & (~TILE_SIZE);
 			break;
 		case DIR_RIGHT:
-			x = (x + vx) / TILE_SIZE;
+			x = (x + vx) & (~TILE_SIZE);
 			break;
 		case DIR_DOWN:
-			y = (y + vy - 15) / TILE_SIZE;
+			y = (y + vy - 15) & (~TILE_SIZE);
 			break;
 		case DIR_LEFT:
-			x = (x + vx - 15) / TILE_SIZE;
+			x = (x + vx - 15) & (~TILE_SIZE);
 			break;
 		}
 	}
