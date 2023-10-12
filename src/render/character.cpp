@@ -13,6 +13,7 @@ Character::Character(byte _character_id, short _x, short _y) : Sprite(_character
 	possess_item_id = 0;
 	using_item_id = 0;
 	using_item_frame_cnt = 0; // frame update, 모션 타이머 조작할 때 같이 줄이자!
+	atk_dmg = 1;
 }
 
 Character *test()
@@ -124,10 +125,12 @@ void Character::use_item()
 
 		break;
 	case ITEM_SPED:
+		using_item_frame_cnt = 120;
 		// 재광이형
 		break;
 	case ITEM_DAMG:
-		// 재광이형
+		using_item_frame_cnt = 120;
+		atk_dmg = 2;
 		break;
 
 	default:
@@ -149,6 +152,11 @@ void Character::render()
 void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 {
 	bool did_crash = false;
+	if (using_item_id == ITEM_SPED)
+	{
+		vx *= 2;
+		vy *= 2;
+	}
 
 	switch (GET_DIR_BIT(state))
 	{
@@ -165,7 +173,6 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		did_crash = map[y / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE];
 		break;
 	}
-
 	if (!did_crash)
 	{
 		Sprite::next_frame();
@@ -199,6 +206,15 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		if (using_item_frame_cnt == 0)
 		{
 			using_item_id = 0;
+			atk_dmg = 1;
 		}
 	}
+}
+
+void Character::damage(byte atk)
+{
+	hp -= atk;
+	if (hp < 0)
+		hp = 0;
+	return;
 }

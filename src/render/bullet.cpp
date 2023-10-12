@@ -105,7 +105,7 @@ void Bullets::delete_bullet(byte idx)
 	bullets[idx] = nullptr;
 }
 
-void Bullets::next_frame(Character *player, Items *items, Background *background)
+void Bullets::next_frame(Character *player_vict, Character *player_owner, Items *items, Background *background)
 {
 	byte i;
 	for (i = 0; i < BULLET_MAX_NUM; i++)
@@ -125,9 +125,9 @@ void Bullets::next_frame(Character *player, Items *items, Background *background
 			continue;
 		}
 
-		if (bullets[i]->did_crash_player(player))
+		if (bullets[i]->did_crash_player(player_vict))
 		{
-			player->hp -= 1;
+			player_vict->damage(player_owner->atk_dmg);
 			bullets[i]->frame_cnt = 100;
 			delete_bullet(i);
 			continue;
