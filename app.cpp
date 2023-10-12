@@ -15,7 +15,7 @@ void start_app()
 	{
 		for (byte j = 2; j < MAP_WIDTH - 1; j++)
 		{
-			background.set(j, i, 1, 0);
+			background.set(j, i, 5, 0);
 		}
 	}
 
