@@ -159,11 +159,36 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 	}
 	else if (using_item_id == ITEM_DASH)
 	{
-		// 2 * 12 = 24 = 16 * 1.5, 1.5칸 대쉬.
-		vx *= 12;
-		vy *= 12;
+		x += vx * 12;
+		y += vy * 12;
+
+		if (x < 0)
+			x = 0;
+		else if (x >= MAX_X)
+			x = MAX_X - 15;
+		if (y < 0)
+			y = 0;
+		else if (y >= MAX_Y)
+			y = MAX_Y - 15;
+
+		byte curr_map_y = (y + 15 * (GET_DIR_BIT(state) == DIR_UP)) / TILE_SIZE;
+		byte curr_map_x = (x + 15 * (GET_DIR_BIT(state) == DIR_RIGHT)) / TILE_SIZE;
+		byte dx = vx / CHARACTER_PX;
+		byte dy = vy / CHARACTER_PX;
+
+		if (map[curr_map_y * MAP_WIDTH + curr_map_x])
+		{
+			while (map[curr_map_y * MAP_WIDTH + curr_map_x])
+			{
+				curr_map_x -= dx;
+				curr_map_y -= dy;
+			}
+			x = curr_map_x * TILE_SIZE;
+			y = curr_map_y * TILE_SIZE;
+		}
 	}
 
+	bool did_crash = false;
 	switch (GET_DIR_BIT(state))
 	{
 	case DIR_UP:
