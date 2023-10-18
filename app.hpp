@@ -4,5 +4,6 @@
 #include "common.hpp"
 
 void start_app();
+void game_loop();
 
 #endif

@@ -32,16 +32,18 @@ void Items::add_item(byte x, byte y)
 
     byte seed = Rand::get();
     // 0 ~ 256
-    if (seed < 50)
-        new_item = new Item(ITEM_HEAL, x * TILE_SIZE, y * TILE_SIZE);
-    else if (seed < 100)
-        new_item = new Item(ITEM_SHLD, x * TILE_SIZE, y * TILE_SIZE);
-    else if (seed < 150)
-        new_item = new Item(ITEM_DASH, x * TILE_SIZE, y * TILE_SIZE);
-    else if (seed < 200)
-        new_item = new Item(ITEM_SPED, x * TILE_SIZE, y * TILE_SIZE);
-    else if (seed < 250)
-        new_item = new Item(ITEM_DAMG, x * TILE_SIZE, y * TILE_SIZE);
+    new_item = new Item(ITEM_DASH, x * TILE_SIZE, y * TILE_SIZE);
+
+    // if (seed < 50)
+    //     new_item = new Item(ITEM_HEAL, x * TILE_SIZE, y * TILE_SIZE);
+    // else if (seed < 100)
+    //     new_item = new Item(ITEM_SHLD, x * TILE_SIZE, y * TILE_SIZE);
+    // else if (seed < 150)
+    //     new_item = new Item(ITEM_DASH, x * TILE_SIZE, y * TILE_SIZE);
+    // else if (seed < 200)
+    //     new_item = new Item(ITEM_SPED, x * TILE_SIZE, y * TILE_SIZE);
+    // else if (seed < 250)
+    //     new_item = new Item(ITEM_DAMG, x * TILE_SIZE, y * TILE_SIZE);
 
     if (new_item == nullptr)
         return;

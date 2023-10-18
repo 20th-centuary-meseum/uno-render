@@ -1,6 +1,8 @@
 #include "src/render/render.hpp"
 #include "src/controller/controller.hpp"
 #include "src/utils/utils.hpp"
+#include "src/assets/assets.hpp"
+#include "app.hpp"
 
 #define FRAME_DELAY_MS 32
 
@@ -9,6 +11,19 @@ void start_app()
 	beginTV();
 	init_controller();
 
+	while (true)
+	{
+		while (!CON_START(con1 | con2))
+		{
+			DecodeFull(START_PAGE);
+			update_controller();
+		}
+		game_loop();
+	}
+}
+
+void game_loop()
+{
 	Background background;
 
 	for (byte i = 2; i < MAP_HEIGHT - 1; i++)
@@ -61,7 +76,10 @@ void start_app()
 			items.render();
 
 			DecodeUI(player1.hp, player2.hp, player1.possess_item_id, player2.possess_item_id);
-			// reset_velocity()
+			if (player1.hp == 0 || player2.hp == 0)
+			{
+				break;
+			}
 		}
 
 		update_controller();

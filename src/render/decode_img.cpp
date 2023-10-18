@@ -273,6 +273,14 @@ void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item)
         DecodeItem(p2_item, 72, 0);
 }
 
+void DecodeFull(byte image_id)
+{
+    for (short i = 0; i < 1536; i++)
+    {
+        TV.screen[i] = pgm_read_byte(&full_imgs[image_id][i]);
+    }
+}
+
 void beginTV()
 {
     TV.begin(_NTSC, 128, 96);

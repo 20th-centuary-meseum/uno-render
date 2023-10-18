@@ -29,6 +29,11 @@
 #define CON_D(con_state) bitRead(con_state, D_BIT)
 #define CON_L(con_state) bitRead(con_state, L_BIT)
 
+#define CON_SELECT(con_state) bitRead(con_state, SELECT_BIT)
+#define CON_START(con_state) bitRead(con_state, START_BIT)
+#define CON_LB(con_state) bitRead(con_state, LB_BIT)
+#define CON_RB(con_state) bitRead(con_state, RB_BIT)
+
 #define POWER_1 3
 #define DATA_CLOCK_1 14
 #define DATA_LATCH_1 15

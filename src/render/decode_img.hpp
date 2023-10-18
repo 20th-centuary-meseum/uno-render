@@ -15,5 +15,6 @@ void DecodeBullet(short x_pos, short y_pos);
 void DecodeItem(byte image_id, byte x_pos, byte y_pos);
 void DecodeSpriteItem(byte image_id, short x_pos, short y_pos);
 void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item);
+void DecodeFull(byte image_id);
 
 #endif
