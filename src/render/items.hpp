@@ -1,7 +1,7 @@
 #ifndef ITEMS_H
 #define ITEMS_H
 
-#define MAX_ITEM_NUM 5
+#define MAX_ITEM_NUM 10
 #include "./sprite.hpp"
 
 class Character;

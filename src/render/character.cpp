@@ -95,7 +95,7 @@ void Character::get_item_if_crashed(Items &items)
 	if (possess_item_id != 0)
 		return;
 
-	for (byte i = 0; i < MAX_POSSESS_ITEM; i++)
+	for (byte i = 0; i < MAX_ITEM_NUM; i++)
 	{
 		if (abs(items[i]->x - x) < 8 && abs(items[i]->y - y) < 8)
 		{

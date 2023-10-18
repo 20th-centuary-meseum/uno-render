@@ -24,8 +24,6 @@
 #define SET_FRAME_BIT(state, frame) state = (state & 0b11111100) | frame
 #define GET_FRAME_BIT(state) state = (state & 0b00000011)
 
-#define MAX_POSSESS_ITEM 2
-
 #include "../../common.hpp"
 #include "./sprite.hpp"
 #include "./decode_img.hpp"
