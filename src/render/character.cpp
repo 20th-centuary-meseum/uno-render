@@ -150,7 +150,6 @@ void Character::render()
 
 void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 {
-	bool did_crash = false;
 	if (using_item_id == ITEM_SPED)
 	{
 		// move_by_controller에서 매 프레임마다 초기화 해줌.
@@ -264,9 +263,8 @@ void Character::damage(byte atk)
 {
 	if (using_item_id != ITEM_SHLD)
 	{
-		hp -= atk;
-		if (hp < 0)
-			hp = 0;
+		if (hp > 0)
+			hp -= atk;
 	}
 	return;
 }
