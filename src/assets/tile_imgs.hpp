@@ -1,7 +1,7 @@
 #ifndef TILE_IMGS_H
 #define TILE_IMGS_H
 
-byte tile_imgs[][32] PROGMEM = {
+const byte tile_imgs[][32] PROGMEM = {
 	{0b00000000, 0b00000000,
 	 0b00000000, 0b00000000,
 	 0b00000000, 0b00000000,
