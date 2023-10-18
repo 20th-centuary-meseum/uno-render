@@ -190,10 +190,10 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 			x = (x + vx) / TILE_SIZE * TILE_SIZE;
 			break;
 		case DIR_DOWN:
-			y = (y + vy - 15) / TILE_SIZE * TILE_SIZE;
+			y = (y + vy < MIN_Y) ? MIN_Y : (y + vy) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
 			break;
 		case DIR_LEFT:
-			x = (x + vx - 15) / TILE_SIZE * TILE_SIZE;
+			x = (x + vx < MIN_X) ? MIN_X : (x + vx) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
 			break;
 		}
 	}
