@@ -20,7 +20,7 @@ void start_app()
 			start_page_loop();
 		}
 		args = select_character_loop();
-		args = game_loop(args & 0b11110000, args & 0b00001111);
+		args = game_loop(args >> 4, args & 0b00001111);
 		args = end_loop(args);
 	}
 }
