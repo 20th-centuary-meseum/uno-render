@@ -39,4 +39,11 @@
 #error Invalid BULLET_FRAME_LEFT value.
 #endif
 
+#define FRAME_DELAY_MS 32
+
+#define SCENE_START 0
+#define SCENE_SELECT_CHARACTER 1
+#define SCENE_GAME_PLAY 2
+#define SCENE_END 3
+
 #endif

@@ -35,7 +35,7 @@ class Character : public Sprite // 12 byte
 public:
 	Character(byte _character_id, short _x, short _y);
 	byte state;
-	byte hp;
+	int8_t hp;
 	byte atk_frame_cnt;
 	byte possess_item_id;
 	byte using_item_id;
