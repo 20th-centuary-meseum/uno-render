@@ -217,15 +217,29 @@ void DecodeSpriteItem(byte image_id, short x_pos, short y_pos)
     }
 }
 
-void decode_mini_img(byte x, byte y, byte *mini_img) // 8x8 이미지 렌더
+void decode_heart_img(byte x, byte *mini_img) // 8x8 이미지 렌더
 {
     for (int i = 0; i < 8; i++)
     {
-        TV.screen[x + (i + y * 8) * MAX_X / 8] = pgm_read_byte(mini_img + i);
+        TV.screen[x + (i + 4) * MAX_X / 8] = pgm_read_byte(mini_img + i);
     }
 }
 
-void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item)
+void decode_score(byte p1_score, byte p2_score)
+{
+    for (int i = 0; i < 8; i++)
+    {
+        TV.screen[6 + (i + 4) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_FRAME_L] + i);
+        TV.screen[7 + (i + 4) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_FRAME_M1] + i);
+        TV.screen[8 + (i + 4) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_FRAME_M2] + i);
+        TV.screen[9 + (i + 4) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_FRAME_R] + i);
+
+        TV.screen[7 + (i + 6) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_START_L + p1_score] + i);
+        TV.screen[8 + (i + 6) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_START_R + p2_score] + i);
+    }
+}
+
+void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item, byte p1_score, byte p2_score)
 {
     byte *heart_full_img = ui_imgs[HEART_FULL];
     byte *heart_half_img = ui_imgs[HEART_HALF];
@@ -233,28 +247,41 @@ void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item)
     // health render
     for (byte x = 0; x < p1_health / 2; x++)
     {
-        decode_mini_img(x, 0, heart_full_img);
+        decode_heart_img(x, heart_full_img);
     }
-
     if (p1_health % 2)
     {
-        decode_mini_img(p1_health / 2, 0, heart_half_img);
+        decode_heart_img(p1_health / 2, heart_half_img);
     }
 
     for (byte x = 15; x > 15 - p2_health / 2; x--)
     {
-        decode_mini_img(x, 0, heart_full_img);
+        decode_heart_img(x, heart_full_img);
     }
-
     if (p2_health % 2)
     {
-        decode_mini_img(15 - p2_health / 2, 0, heart_half_img);
+        decode_heart_img(15 - p2_health / 2, heart_half_img);
     }
 
     if (p1_item)
-        DecodeItem(p1_item, 40, 0);
+    {
+        for (byte i = 4; i < 16; i++)
+        {
+            TV.screen[5 + i * MAX_X / 8] |= pgm_read_byte(item_imgs[p1_item - 1] + i * 2);
+            TV.screen[5 + i * MAX_X / 8 + 1] |= pgm_read_byte(item_imgs[p1_item - 1] + i * 2 + 1);
+        }
+    }
+
     if (p2_item)
-        DecodeItem(p2_item, 72, 0);
+    {
+        for (byte i = 4; i < 16; i++)
+        {
+            TV.screen[9 + i * MAX_X / 8] |= pgm_read_byte(item_imgs[p2_item - 1] + i * 2);
+            TV.screen[9 + i * MAX_X / 8 + 1] |= pgm_read_byte(item_imgs[p2_item - 1] + i * 2 + 1);
+        }
+    }
+
+    decode_score(p1_score, p2_score);
 }
 
 void DecodeFull(byte image_id)

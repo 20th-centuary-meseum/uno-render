@@ -5,8 +5,27 @@
 #include "../utils/utils.hpp"
 #include "../assets/assets.hpp"
 
-// return value 형식 => 1p 승리: return 1. 2p 승리: return 2
 byte game_loop(byte char1_id, byte char2_id)
+{
+	byte p1_score = 0, p2_score = 0;
+
+	while (p1_score < 3 && p2_score < 3)
+	{
+		if (set_loop(char1_id, char2_id, p1_score, p2_score) == 1)
+		{
+			p1_score += 1;
+		}
+		else
+		{
+			p2_score += 1;
+		}
+	}
+
+	return p1_score == 3 ? 1 : 2;
+}
+
+// return value 형식 => 1p 승리: return 1. 2p 승리: return 2
+byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 {
 	Background background;
 
@@ -68,7 +87,7 @@ byte game_loop(byte char1_id, byte char2_id)
 				return 1;
 			}
 
-			DecodeUI(player1.hp, player2.hp, player1.possess_item_id, player2.possess_item_id);
+			DecodeUI(player1.hp, player2.hp, player1.possess_item_id, player2.possess_item_id, p1_score, p2_score);
 		}
 
 		update_controller();
