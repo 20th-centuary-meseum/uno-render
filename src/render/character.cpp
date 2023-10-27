@@ -9,7 +9,7 @@ Character::Character(byte _character_id, short _x, short _y) : Sprite(_character
 	state = 0;
 	atk_frame_cnt = 0;
 	SET_CHAR_BIT(state, _character_id);
-	hp = CHARACTER_MAX_HP - 5; // 음수, 최대 체력 이상 예외처리 필수!
+	hp = CHARACTER_MAX_HP; // 음수, 최대 체력 이상 예외처리 필수!
 	possess_item_id = 0;
 	using_item_id = 0;
 	using_item_frame_cnt = 0; // frame update, 모션 타이머 조작할 때 같이 줄이자!
@@ -115,8 +115,8 @@ void Character::use_item()
 	case ITEM_HEAL:
 		using_item_frame_cnt = 60;
 		hp += 2;
-		if (hp > 10)
-			hp = 10;
+		if (hp > CHARACTER_MAX_HP)
+			hp = CHARACTER_MAX_HP;
 		break;
 	case ITEM_SHLD:
 		using_item_frame_cnt = 120;

@@ -227,46 +227,30 @@ void decode_mini_img(byte x, byte y, byte *mini_img) // 8x8 이미지 렌더
 
 void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item)
 {
-    byte *heart_ptr = ui_imgs[0];
+    byte *heart_full_img = ui_imgs[HEART_FULL];
+    byte *heart_half_img = ui_imgs[HEART_HALF];
+
     // health render
-    for (int y = 0; y < (p1_health) / 5 + 1; y++) // p1
-
+    for (byte x = 0; x < p1_health / 2; x++)
     {
-        if (p1_health >= (y + 1) * 5)
-        {
-            decode_mini_img(0, y, heart_ptr);
-            decode_mini_img(1, y, heart_ptr);
-            decode_mini_img(2, y, heart_ptr);
-            decode_mini_img(3, y, heart_ptr);
-            decode_mini_img(4, y, heart_ptr);
-        }
-        else
-        {
-            for (int x = 0; x < p1_health % 5; x++)
-            {
-                decode_mini_img(x, y, heart_ptr);
-            }
-        }
+        decode_mini_img(x, 0, heart_full_img);
     }
 
-    for (int y = 0; y < (p2_health) / 5 + 1; y++) // p2
+    if (p1_health % 2)
     {
-        if (p2_health >= (y + 1) * 5)
-        {
-            decode_mini_img(15, y, heart_ptr);
-            decode_mini_img(14, y, heart_ptr);
-            decode_mini_img(13, y, heart_ptr);
-            decode_mini_img(12, y, heart_ptr);
-            decode_mini_img(11, y, heart_ptr);
-        }
-        else
-        {
-            for (int x = 0; x < p2_health % 5; x++)
-            {
-                decode_mini_img(15 - x, y, heart_ptr);
-            }
-        }
+        decode_mini_img(p1_health / 2, 0, heart_half_img);
     }
+
+    for (byte x = 15; x > 15 - p2_health / 2; x--)
+    {
+        decode_mini_img(x, 0, heart_full_img);
+    }
+
+    if (p2_health % 2)
+    {
+        decode_mini_img(15 - p2_health / 2, 0, heart_half_img);
+    }
+
     if (p1_item)
         DecodeItem(p1_item, 40, 0);
     if (p2_item)
