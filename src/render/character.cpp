@@ -1,8 +1,11 @@
 #include "./character.hpp"
+#include "./bullet.hpp"
 
-#define CHARACTER_PX 2
-#define CHARACTER_FRAME 1
 #define CHARACTER_MAX_HP 10
+
+static byte Character::CHARACTER_PX = 2;
+static byte Character::CHARACTER_FRAME = 1;
+static byte Character::CHARACTER_ATK_DMG = 1;
 
 Character::Character(byte _character_id, short _x, short _y) : Sprite(_character_id, _x, _y)
 {
@@ -13,12 +16,13 @@ Character::Character(byte _character_id, short _x, short _y) : Sprite(_character
 	possess_item_id = 0;
 	using_item_id = 0;
 	using_item_frame_cnt = 0; // frame update, 모션 타이머 조작할 때 같이 줄이자!
-	atk_dmg = 1;
+	atk_dmg = CHARACTER_ATK_DMG;
 }
 
-Character *test()
+static void Character::activate_hyper()
 {
-	return new Character(0, 0, 0);
+	CHARACTER_PX = 3;
+	CHARACTER_ATK_DMG = 2;
 }
 
 void Character::set_speed(byte px, byte frame)
@@ -86,7 +90,7 @@ bool Character::attack()
 	}
 
 	SET_ATK_BIT(state, true);
-	atk_frame_cnt = ATTACK_DELAY;
+	atk_frame_cnt = Bullets::ATTACK_DELAY;
 	return true;
 }
 
@@ -129,7 +133,7 @@ void Character::use_item()
 		break;
 	case ITEM_DAMG:
 		using_item_frame_cnt = 120;
-		atk_dmg = 2;
+		atk_dmg = CHARACTER_ATK_DMG * 2;
 		break;
 
 	default:
@@ -231,7 +235,7 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		atk_frame_cnt -= 1;
 	}
 
-	if (atk_frame_cnt < ATTACK_DELAY - 5)
+	if (atk_frame_cnt < Bullets::ATTACK_DELAY - 5)
 	{
 		SET_ATK_BIT(state, false);
 	}
@@ -254,7 +258,7 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		if (using_item_frame_cnt == 0)
 		{
 			using_item_id = 0;
-			atk_dmg = 1;
+			atk_dmg = CHARACTER_ATK_DMG;
 		}
 	}
 }

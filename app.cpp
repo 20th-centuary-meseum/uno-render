@@ -15,7 +15,6 @@ void start_app()
 
 	while (true)
 	{
-		// game_loop(0, 0);
 		if (args)
 		{
 			start_page_loop();

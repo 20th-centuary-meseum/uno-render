@@ -225,9 +225,51 @@ void decode_heart_img(byte x, byte *mini_img) // 8x8 이미지 렌더
     }
 }
 
-void decode_score(byte p1_score, byte p2_score)
+void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item, byte p1_score, byte p2_score, unsigned short frame_left)
 {
-    for (int i = 0; i < 8; i++)
+    byte *heart_full_img = ui_imgs[HEART_FULL];
+    byte *heart_half_img = ui_imgs[HEART_HALF];
+    byte i;
+
+    // health render
+    for (i = 0; i < p1_health / 2; i++)
+    {
+        decode_heart_img(i, heart_full_img);
+    }
+    if (p1_health % 2)
+    {
+        decode_heart_img(p1_health / 2, heart_half_img);
+    }
+
+    for (i = 15; i > 15 - p2_health / 2; i--)
+    {
+        decode_heart_img(i, heart_full_img);
+    }
+    if (p2_health % 2)
+    {
+        decode_heart_img(15 - p2_health / 2, heart_half_img);
+    }
+
+    // item render
+    if (p1_item)
+    {
+        for (i = 4; i < 16; i++)
+        {
+            TV.screen[5 + i * MAX_X / 8] |= pgm_read_byte(item_imgs[p1_item - 1] + i * 2);
+            TV.screen[5 + i * MAX_X / 8 + 1] |= pgm_read_byte(item_imgs[p1_item - 1] + i * 2 + 1);
+        }
+    }
+    if (p2_item)
+    {
+        for (i = 4; i < 16; i++)
+        {
+            TV.screen[9 + i * MAX_X / 8] |= pgm_read_byte(item_imgs[p2_item - 1] + i * 2);
+            TV.screen[9 + i * MAX_X / 8 + 1] |= pgm_read_byte(item_imgs[p2_item - 1] + i * 2 + 1);
+        }
+    }
+
+    // score render
+    for (i = 0; i < 8; i++)
     {
         TV.screen[6 + (i + 4) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_FRAME_L] + i);
         TV.screen[7 + (i + 4) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_FRAME_M1] + i);
@@ -237,51 +279,42 @@ void decode_score(byte p1_score, byte p2_score)
         TV.screen[7 + (i + 6) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_START_L + p1_score] + i);
         TV.screen[8 + (i + 6) * MAX_X / 8] |= pgm_read_byte(ui_imgs[SCORE_START_R + p2_score] + i);
     }
-}
 
-void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item, byte p1_score, byte p2_score)
-{
-    byte *heart_full_img = ui_imgs[HEART_FULL];
-    byte *heart_half_img = ui_imgs[HEART_HALF];
+    if (frame_left >= 0)
+    {
+        // timer render
+        byte x_start = 4;
+        byte length = 119 * (frame_left / 1800.0);
+        byte y_start = 13 * MAX_X / 8;
+        byte y_end = 14 * MAX_X / 8;
+        byte tmp = 0;
 
-    // health render
-    for (byte x = 0; x < p1_health / 2; x++)
-    {
-        decode_heart_img(x, heart_full_img);
-    }
-    if (p1_health % 2)
-    {
-        decode_heart_img(p1_health / 2, heart_half_img);
-    }
-
-    for (byte x = 15; x > 15 - p2_health / 2; x--)
-    {
-        decode_heart_img(x, heart_full_img);
-    }
-    if (p2_health % 2)
-    {
-        decode_heart_img(15 - p2_health / 2, heart_half_img);
-    }
-
-    if (p1_item)
-    {
-        for (byte i = 4; i < 16; i++)
+        for (i = 4; i < 8; i++)
         {
-            TV.screen[5 + i * MAX_X / 8] |= pgm_read_byte(item_imgs[p1_item - 1] + i * 2);
-            TV.screen[5 + i * MAX_X / 8 + 1] |= pgm_read_byte(item_imgs[p1_item - 1] + i * 2 + 1);
+            if (i >= x_start + length)
+                break;
+            tmp |= 0b10000000 >> i;
+        }
+        TV.screen[y_start] = tmp;
+        TV.screen[y_end] = tmp;
+
+        if (length > 4)
+        {
+            for (i = 8; i <= length - 4; i += 8)
+            {
+                TV.screen[y_start + i / 8] = 0b11111111;
+                TV.screen[y_end + i / 8] = 0b11111111;
+            }
+
+            tmp = 0;
+            for (i = 0; i < (length - 4) % 8; i++)
+            {
+                tmp |= 0b10000000 >> i;
+            }
+            TV.screen[y_start + (x_start + length) / 8] = tmp;
+            TV.screen[y_end + (x_start + length) / 8] = tmp;
         }
     }
-
-    if (p2_item)
-    {
-        for (byte i = 4; i < 16; i++)
-        {
-            TV.screen[9 + i * MAX_X / 8] |= pgm_read_byte(item_imgs[p2_item - 1] + i * 2);
-            TV.screen[9 + i * MAX_X / 8 + 1] |= pgm_read_byte(item_imgs[p2_item - 1] + i * 2 + 1);
-        }
-    }
-
-    decode_score(p1_score, p2_score);
 }
 
 void DecodeFull(byte image_id)

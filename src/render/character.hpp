@@ -32,8 +32,11 @@
 
 class Character : public Sprite // 12 byte
 {
+	static byte CHARACTER_PX;
+	static byte CHARACTER_FRAME;
+	static byte CHARACTER_ATK_DMG;
+
 public:
-	Character(byte _character_id, short _x, short _y);
 	byte state;
 	int8_t hp;
 	byte atk_frame_cnt;
@@ -41,6 +44,10 @@ public:
 	byte using_item_id;
 	byte using_item_frame_cnt;
 	byte atk_dmg;
+
+	Character(byte _character_id, short _x, short _y);
+
+	static void activate_hyper();
 
 	void set_speed(byte px, byte frame);
 

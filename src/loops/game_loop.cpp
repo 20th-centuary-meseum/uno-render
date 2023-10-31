@@ -50,12 +50,31 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 	unsigned long last = millis();
 	unsigned long current = millis();
 
+	// 1min = 60sec = about 1800 frame
+	short frame_left = 1800;
+	bool is_hyper = false;
+
 	while (true)
 	{
 		Rand::refresh();
 		current = millis();
 		if (current - last > FRAME_DELAY_MS)
 		{
+			if (!is_hyper)
+			{
+				if (frame_left < 0)
+				{
+					is_hyper = true;
+					Character::activate_hyper();
+					Bullet::activate_hyper();
+					Bullets::activate_hyper();
+				}
+				else
+				{
+					frame_left -= 1;
+				}
+			}
+
 			last = millis();
 			background.render();
 
@@ -87,7 +106,7 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 				return 1;
 			}
 
-			DecodeUI(player1.hp, player2.hp, player1.possess_item_id, player2.possess_item_id, p1_score, p2_score);
+			DecodeUI(player1.hp, player2.hp, player1.possess_item_id, player2.possess_item_id, p1_score, p2_score, frame_left);
 		}
 
 		update_controller();
