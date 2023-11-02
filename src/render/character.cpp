@@ -105,13 +105,35 @@ void Character::get_item_if_crashed(Items &items)
 	if (possess_item_id != 0)
 		return;
 
-	for (byte i = 0; i < MAX_ITEM_NUM; i++)
+	int8_t item_id = 0;
+
+	item_id = items.at(x + 4, y + 4);
+	if (item_id > 0)
 	{
-		if (abs(items[i]->x - x) < 8 && abs(items[i]->y - y) < 8)
-		{
-			possess_item_id = items[i]->face_id;
-			items.delete_item(i);
-		}
+		possess_item_id = item_id;
+		items.delete_item(x + 4, y + 4);
+		return;
+	}
+	item_id = items.at(x + 4, y + 12);
+	if (item_id > 0)
+	{
+		possess_item_id = item_id;
+		items.delete_item(x + 4, y + 12);
+		return;
+	}
+	item_id = items.at(x + 12, y + 4);
+	if (item_id > 0)
+	{
+		possess_item_id = item_id;
+		items.delete_item(x + 12, y + 4);
+		return;
+	}
+	item_id = items.at(x + 12, y + 12);
+	if (item_id > 0)
+	{
+		possess_item_id = item_id;
+		items.delete_item(x + 12, y + 12);
+		return;
 	}
 }
 
