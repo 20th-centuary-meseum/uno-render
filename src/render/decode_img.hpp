@@ -11,6 +11,7 @@ void beginTV();
 void clearTV();
 void DecodeTile(byte image_byte, byte x_pos, byte y_pos);
 void DecodeSprite(byte image_byte, short x_pos, short y_pos);
+void DecodeSpriteReverse(byte image_byte, short x_pos, short y_pos);
 void DecodeBullet(short x_pos, short y_pos);
 void DecodeItem(byte image_id, byte x_pos, byte y_pos);
 void DecodeSpriteItem(byte image_id, short x_pos, short y_pos);

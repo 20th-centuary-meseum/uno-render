@@ -69,6 +69,27 @@ void DecodeSprite(byte image_byte, short x_pos, short y_pos)
         }
     }
 }
+
+void DecodeSpriteReverse(byte image_byte, short x_pos, short y_pos)
+{
+    if (x_pos < -15 || x_pos >= TILE_SIZE * MAP_WIDTH)
+        return;
+    if (y_pos < -15 || y_pos >= TILE_SIZE * MAP_HEIGHT)
+        return;
+
+    byte image_id = image_byte;
+
+    short tmp_y = y_pos * MAX_X / 8;
+    byte shift_length = x_pos % 8;
+
+    for (byte i = 0; i < TILE_SIZE; i++)
+    {
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= (pgm_read_byte(&sprite_imgs[image_id][i * 2])) >> shift_length;
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= (pgm_read_byte(&sprite_imgs[image_id][i * 2])) << (8 - shift_length) | (pgm_read_byte(&sprite_imgs[image_id][i * 2 + 1])) >> shift_length;
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 2] |= (pgm_read_byte(&sprite_imgs[image_id][i * 2 + 1])) << (8 - shift_length);
+    }
+}
+
 void DecodeBullet(short x_pos, short y_pos)
 {
     if (x_pos < -15 || x_pos >= TILE_SIZE * MAP_WIDTH)
@@ -129,10 +150,7 @@ void DecodeBullet(short x_pos, short y_pos)
 
 void DecodeTile(byte image_byte, byte x_pos, byte y_pos)
 {
-    byte image_id = image_byte >> 2;
-    byte image_rot = bitRead(image_byte, 0) + 2 * bitRead(image_byte, 0);
-
-    byte *image_address = *(tile_imgs + image_id);
+    byte *image_address = *(tile_imgs + image_byte);
 
     int tmp_y = y_pos * MAX_X / 8;
 

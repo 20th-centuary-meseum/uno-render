@@ -219,6 +219,12 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		}
 	}
 
+	if (using_item_id == ITEM_SHLD)
+	{
+		x_frame = 2;
+		y_frame = 2;
+	}
+
 	if (using_item_id != ITEM_DAMG)
 	{
 		atk_dmg = CHARACTER_ATK_DMG;
@@ -228,16 +234,16 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 	switch (GET_DIR_BIT(state))
 	{
 	case DIR_UP:
-		did_crash = map[(y + vy + 15) / TILE_SIZE * MAP_WIDTH + x / TILE_SIZE] | map[(y + vy + 15) / TILE_SIZE * MAP_WIDTH + (x + 15) / TILE_SIZE];
+		did_crash = map[(y + vy + 14) / TILE_SIZE * MAP_WIDTH + (x + 1) / TILE_SIZE] | map[(y + vy + 14) / TILE_SIZE * MAP_WIDTH + (x + 14) / TILE_SIZE];
 		break;
 	case DIR_RIGHT:
-		did_crash = map[y / TILE_SIZE * MAP_WIDTH + (x + vx + 15) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx + 15) / TILE_SIZE];
+		did_crash = map[(y + 1) / TILE_SIZE * MAP_WIDTH + (x + vx + 14) / TILE_SIZE] | map[(y + 14) / TILE_SIZE * MAP_WIDTH + (x + vx + 14) / TILE_SIZE];
 		break;
 	case DIR_DOWN:
-		did_crash = map[(y + vy) / TILE_SIZE * MAP_WIDTH + x / TILE_SIZE] | map[(y + vy) / TILE_SIZE * MAP_WIDTH + (x + 15) / TILE_SIZE];
+		did_crash = map[(y + vy + 1) / TILE_SIZE * MAP_WIDTH + (x + 1) / TILE_SIZE] | map[(y + vy + 1) / TILE_SIZE * MAP_WIDTH + (x + 14) / TILE_SIZE];
 		break;
 	case DIR_LEFT:
-		did_crash = map[y / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE];
+		did_crash = map[(y + 1) / TILE_SIZE * MAP_WIDTH + (x + vx + 1) / TILE_SIZE] | map[(y + 14) / TILE_SIZE * MAP_WIDTH + (x + vx + 1) / TILE_SIZE];
 		break;
 	}
 	if (did_crash || !(is_x_in() && is_y_in()))
@@ -245,16 +251,16 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		switch (GET_DIR_BIT(state))
 		{
 		case DIR_UP:
-			y = (y + vy) / TILE_SIZE * TILE_SIZE;
+			y = (y + vy + 1) / TILE_SIZE * TILE_SIZE;
 			break;
 		case DIR_RIGHT:
-			x = (x + vx) / TILE_SIZE * TILE_SIZE;
+			x = (x + vx + 1) / TILE_SIZE * TILE_SIZE;
 			break;
 		case DIR_DOWN:
-			y = (y + vy < MIN_Y) ? MIN_Y : (y + vy) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
+			y = (y + vy + 1 < MIN_Y) ? MIN_Y : (y + vy + 1) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
 			break;
 		case DIR_LEFT:
-			x = (x + vx < MIN_X) ? MIN_X : (x + vx) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
+			x = (x + vx + 1 < MIN_X) ? MIN_X : (x + vx + 1) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
 			break;
 		}
 	}

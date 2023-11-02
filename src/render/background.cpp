@@ -8,24 +8,32 @@ Background::Background() : map{
 {
 }
 
-void Background::set(byte X, byte Y, byte tile_id, byte tile_rot)
+void Background::set(byte X, byte Y, byte tile_id)
 {
-	// make tile byte with id and tile_rot
-	// 000DMMRR D: 0 = 파괴 가능, 1 = 파괴불능. 블록이 사용되는 MM 맵 ID. RR: 로테이션.
-	byte tile_byte;
-	tile_byte = tile_id << 2;
-	tile_byte += tile_rot;
-	//
-	map[Y * MAP_WIDTH + X] = tile_byte;
+	set(X, Y, tile_id, false);
+}
+
+void Background::set(byte X, byte Y, byte tile_id, bool invinsible)
+{
+	// 000000MMD D: 0 = 파괴 가능, 1 = 파괴불능.
+	map[Y * MAP_WIDTH + X] = tile_id << 1 + invinsible;
 }
 
 void Background::generate_map()
 {
-	for (byte i = 2; i < MAP_HEIGHT - 1; i++)
+	for (byte i = 1; i < MAP_HEIGHT; i++)
 	{
-		for (byte j = 2; j < MAP_WIDTH - 1; j++)
+		for (byte j = 0; j < MAP_WIDTH; j++)
 		{
-			set(j, i, 1, 0);
+			if (i == 1 && j == 0)
+			{
+				continue;
+			}
+			if (i == MAP_HEIGHT - 1 && j == MAP_WIDTH - 1)
+			{
+				continue;
+			}
+			set(j, i, 1, bitRead(background_map[0][i], j));
 		}
 	}
 }

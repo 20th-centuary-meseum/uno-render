@@ -60,21 +60,6 @@ byte select_character_loop()
 
 	DecodeFull(SELECT_CHAR);
 
-	DecodeSprite(0 << 5, coords[1][0], coords[1][1]);
-	DecodeSprite(0 << 5, coords[1][0] + 64, coords[1][1]);
-
-	DecodeSprite(1 << 5, coords[2][0], coords[2][1]);
-	DecodeSprite(1 << 5, coords[2][0] + 64, coords[2][1]);
-
-	DecodeSprite(2 << 5, coords[3][0], coords[3][1]);
-	DecodeSprite(2 << 5, coords[3][0] + 64, coords[3][1]);
-
-	DecodeSprite(3 << 5, coords[4][0], coords[4][1]);
-	DecodeSprite(3 << 5, coords[4][0] + 64, coords[4][1]);
-
-	DecodeSprite(4 << 5, coords[5][0], coords[5][1]);
-	DecodeSprite(4 << 5, coords[5][0] + 64, coords[5][1]);
-
 	while (!char1_selected || !char2_selected)
 	{
 		current = millis();
@@ -85,14 +70,32 @@ byte select_character_loop()
 			DecodeSprite(char1_id << 5, coords[0][0], coords[0][1]);
 			DecodeSprite(char2_id << 5, coords[0][0] + 64, coords[0][1]);
 
-			DecodeSprite(char1_id << 5, coords[char1_id + 1][0], coords[char1_id + 1][1]);
-			DecodeSprite(char2_id << 5, coords[char2_id + 1][0] + 64, coords[char2_id + 1][1]);
+			for (byte i = 0; i < 5; i++)
+			{
+				if (i == char1_id)
+				{
+					DecodeSpriteReverse(i << 5, coords[i + 1][0], coords[i + 1][1]);
+					DecodeSprite(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
+				}
+				else if (i == char2_id)
+				{
+					DecodeSprite(i << 5, coords[i + 1][0], coords[i + 1][1]);
+					DecodeSpriteReverse(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
+				}
+				else
+				{
+					DecodeSprite(i << 5, coords[i + 1][0], coords[i + 1][1]);
+					DecodeSprite(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
+				}
+			}
 
 			char1_id = changed_char_id(char1_id, con1, con1_last);
 			char2_id = changed_char_id(char2_id, con2, con2_last);
 
 			con1_last = con1;
 			con2_last = con2;
+
+			last = millis();
 		}
 		if (CON_SELECT(con1))
 		{
