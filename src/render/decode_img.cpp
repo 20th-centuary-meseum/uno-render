@@ -225,7 +225,7 @@ void decode_heart_img(byte x, byte *mini_img) // 8x8 이미지 렌더
     }
 }
 
-void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item, byte p1_score, byte p2_score, unsigned short frame_left)
+void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item, byte p1_score, byte p2_score, short frame_left)
 {
     byte *heart_full_img = ui_imgs[HEART_FULL];
     byte *heart_half_img = ui_imgs[HEART_HALF];
@@ -319,9 +319,10 @@ void DecodeUI(byte p1_health, byte p2_health, byte p1_item, byte p2_item, byte p
 
 void DecodeFull(byte image_id)
 {
-    for (short i = 0; i < 1536; i++)
+    for (short i = 0; i < 768; i++)
     {
-        TV.screen[i] = pgm_read_byte(&full_imgs[image_id][i]);
+        TV.screen[i * 2] = pgm_read_byte(&full_imgs[image_id][i * 2]);
+        TV.screen[i * 2 + 1] = pgm_read_byte(&full_imgs[image_id][i * 2 + 1]);
     }
 }
 

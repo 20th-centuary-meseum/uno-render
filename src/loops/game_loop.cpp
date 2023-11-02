@@ -27,15 +27,17 @@ byte game_loop(byte char1_id, byte char2_id)
 // return value 형식 => 1p 승리: return 1. 2p 승리: return 2
 byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 {
-	Background background;
+	// hyper mode setting
+	Character::deactivate_hyper();
+	Bullet::deactivate_hyper();
+	Bullets::deactivate_hyper();
 
-	for (byte i = 2; i < MAP_HEIGHT - 1; i++)
-	{
-		for (byte j = 2; j < MAP_WIDTH - 1; j++)
-		{
-			background.set(j, i, 1, 0);
-		}
-	}
+	// 1min = 60sec = about 1800 frame
+	short frame_left = 1800;
+	bool is_hyper = false;
+
+	Background background;
+	background.generate_map();
 
 	Character player1(char1_id, 1, 16);
 	Bullets player1_bullets;
@@ -49,10 +51,6 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 
 	unsigned long last = millis();
 	unsigned long current = millis();
-
-	// 1min = 60sec = about 1800 frame
-	short frame_left = 1800;
-	bool is_hyper = false;
 
 	while (true)
 	{

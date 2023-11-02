@@ -25,6 +25,12 @@ static void Character::activate_hyper()
 	CHARACTER_ATK_DMG = 2;
 }
 
+static void Character::deactivate_hyper()
+{
+	CHARACTER_PX = 2;
+	CHARACTER_ATK_DMG = 1;
+}
+
 void Character::set_speed(byte px, byte frame)
 {
 	if (vx != 0)
@@ -191,6 +197,11 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		}
 	}
 
+	if (using_item_id != ITEM_DAMG)
+	{
+		atk_dmg = CHARACTER_ATK_DMG;
+	}
+
 	bool did_crash = false;
 	switch (GET_DIR_BIT(state))
 	{
@@ -258,7 +269,6 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		if (using_item_frame_cnt == 0)
 		{
 			using_item_id = 0;
-			atk_dmg = CHARACTER_ATK_DMG;
 		}
 	}
 }

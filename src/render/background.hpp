@@ -10,6 +10,7 @@ public:
 	Background();
 	void set(byte X, byte Y, byte tile_id, byte tile_rot); // fin!!
 	void render();
+	void generate_map();
 };
 
 #endif

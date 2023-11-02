@@ -55,6 +55,10 @@ static void Bullet::activate_hyper()
 {
 	BULLET_PX = 5;
 }
+static void Bullet::deactivate_hyper()
+{
+	BULLET_PX = 3;
+}
 
 void Bullet::next_frame()
 {
@@ -107,6 +111,10 @@ Bullets::Bullets() : bullets{
 static void Bullets::activate_hyper()
 {
 	ATTACK_DELAY = 20;
+}
+static void Bullets::deactivate_hyper()
+{
+	ATTACK_DELAY = 30;
 }
 
 void Bullets::add_bullet(byte x, byte y, byte dir)

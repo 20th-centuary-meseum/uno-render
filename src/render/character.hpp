@@ -48,6 +48,7 @@ public:
 	Character(byte _character_id, short _x, short _y);
 
 	static void activate_hyper();
+	static void deactivate_hyper();
 
 	void set_speed(byte px, byte frame);
 

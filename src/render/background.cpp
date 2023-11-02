@@ -19,6 +19,17 @@ void Background::set(byte X, byte Y, byte tile_id, byte tile_rot)
 	map[Y * MAP_WIDTH + X] = tile_byte;
 }
 
+void Background::generate_map()
+{
+	for (byte i = 2; i < MAP_HEIGHT - 1; i++)
+	{
+		for (byte j = 2; j < MAP_WIDTH - 1; j++)
+		{
+			set(j, i, 1, 0);
+		}
+	}
+}
+
 void Background::render()
 {
 	for (byte x = 0; x < MAP_WIDTH; x++)

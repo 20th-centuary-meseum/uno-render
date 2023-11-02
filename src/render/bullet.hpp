@@ -18,6 +18,7 @@ class Bullet : public Sprite // 10 byte
 public:
 	Bullet(byte _x, byte _y, byte dir);
 	static void activate_hyper();
+	static void deactivate_hyper();
 
 	byte frame_left;
 	void next_frame();
@@ -35,6 +36,8 @@ public:
 	byte next_bullet_idx;
 	Bullets();
 	static void activate_hyper();
+	static void deactivate_hyper();
+
 	Bullet *bullets[BULLET_MAX_NUM];
 	void add_bullet(byte x, byte y, byte dir);
 	void delete_bullet(byte idx);
