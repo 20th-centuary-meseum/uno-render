@@ -164,7 +164,7 @@ void Bullets::next_frame(Character *player_vict, Character *player_owner, Items 
 		{
 			byte tile_x = map_crash_xy >> 4;
 			byte tile_y = map_crash_xy & 0b00001111;
-			if (background->map[tile_x + tile_y * MAP_WIDTH] & 0b00000001 == 0)
+			if (!background->is_invinsible(tile_x, tile_y))
 			{
 				background->set(tile_x, tile_y, 0);
 				items->add_item(tile_x, tile_y);

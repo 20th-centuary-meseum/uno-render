@@ -23,11 +23,11 @@ class Background
 {
 public:
 	byte map[MAP_WIDTH * MAP_HEIGHT];
-	Background();
+	Background(byte map_seed);
 	void set(byte X, byte Y, byte tile_id);
 	void set(byte X, byte Y, byte tile_id, bool invinsible);
+	bool is_invinsible(byte x, byte y);
 	void render();
-	void generate_map();
 };
 
 #endif

@@ -36,8 +36,9 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 	short frame_left = 1800;
 	bool is_hyper = false;
 
-	Background background;
-	background.generate_map();
+	Rand::refresh();
+	Rand::get();
+	Background background(Rand::get());
 
 	Character player1(char1_id, 1, 16);
 	Bullets player1_bullets;
