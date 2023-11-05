@@ -47,6 +47,8 @@ byte select_character_loop()
 	bool char2_selected = false;
 	byte con2_last = 0;
 
+	bool need_rerender = true;
+
 	byte coords[][2] = {
 		{24, 24},
 		{X_START, Y_START},
@@ -63,37 +65,32 @@ byte select_character_loop()
 	while (!char1_selected || !char2_selected)
 	{
 		current = millis();
-		if (current - last > 64)
+		if (need_rerender)
 		{
 			DecodeFull(SELECT_CHAR);
 
-			DecodeSprite(char1_id << 5, coords[0][0], coords[0][1]);
-			DecodeSprite(char2_id << 5, coords[0][0] + 64, coords[0][1]);
+			if (char1_selected)
+				DecodeSpriteReverse(char1_id << 5, coords[0][0], coords[0][1]);
+			else
+				DecodeSprite(char1_id << 5, coords[0][0], coords[0][1]);
+
+			if (char2_selected)
+				DecodeSpriteReverse(char2_id << 5, coords[0][0] + 64, coords[0][1]);
+			else
+				DecodeSprite(char2_id << 5, coords[0][0] + 64, coords[0][1]);
 
 			for (byte i = 0; i < 5; i++)
 			{
 				if (i == char1_id)
-				{
 					DecodeSpriteReverse(i << 5, coords[i + 1][0], coords[i + 1][1]);
-					DecodeSprite(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
-				}
-				else if (i == char2_id)
-				{
-					DecodeSprite(i << 5, coords[i + 1][0], coords[i + 1][1]);
-					DecodeSpriteReverse(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
-				}
 				else
-				{
 					DecodeSprite(i << 5, coords[i + 1][0], coords[i + 1][1]);
+
+				if (i == char2_id)
+					DecodeSpriteReverse(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
+				else
 					DecodeSprite(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
-				}
 			}
-
-			char1_id = changed_char_id(char1_id, con1, con1_last);
-			char2_id = changed_char_id(char2_id, con2, con2_last);
-
-			con1_last = con1;
-			con2_last = con2;
 
 			last = millis();
 		}
@@ -106,7 +103,16 @@ byte select_character_loop()
 			char2_selected = true;
 		}
 
+		con1_last = con1;
+		con2_last = con2;
 		update_controller();
+
+		if (!char1_selected)
+			char1_id = changed_char_id(char1_id, con1, con1_last);
+		if (!char2_selected)
+			char2_id = changed_char_id(char2_id, con2, con2_last);
+
+		need_rerender = (con1_last != con1 && !char1_selected) || (con2_last != con2 && char2_selected);
 	}
 
 	return char1_id << 4 | char2_id;
