@@ -1,0 +1,6 @@
+#include "./bullet_img.hpp"
+#include "./full_imgs.hpp"
+#include "./sprite_imgs.hpp"
+#include "./tile_imgs.hpp"
+#include "./item_imgs.hpp"
+#include "./ui_imgs.hpp"

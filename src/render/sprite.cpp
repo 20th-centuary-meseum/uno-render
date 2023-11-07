@@ -8,6 +8,7 @@ void Sprite::start_next_frame()
 	frame_cnt = frame_cnt > 59 ? 0 : frame_cnt + 1;
 }
 
+Sprite::Sprite() {}
 Sprite::Sprite(byte _face_id, short _x, short _y)
 {
 	x = _x;
@@ -19,18 +20,37 @@ Sprite::Sprite(byte _face_id, short _x, short _y)
 	face_id = _face_id;
 }
 
-void Sprite::render() { DecodeSprite(face_id << 2, x, y); }
+void Sprite::render()
+{
+	DecodeSprite(face_id, x, y);
+}
+
+bool Sprite::is_x_in()
+{
+	return x + vx >= MIN_X && x + vx < MAX_X - 14;
+}
+
+bool Sprite::is_y_in()
+{
+	return y + vy >= MIN_Y && y + vy < MAX_Y - 14;
+}
 
 void Sprite::next_frame()
 {
 	// 나머지가 0일 경우, 즉 x_frame만큼 지났을 경우 x좌표 이동.
 	if (!(frame_cnt % x_frame))
 	{
-		x += vx;
+		if (is_x_in())
+		{
+			x += vx;
+		}
 	}
 	if (!(frame_cnt % y_frame))
 	{
-		y += vy;
+		if (is_y_in())
+		{
+			y += vy;
+		}
 	}
 	// % 연산은 굉장히 느림. x_frame을 2^n의 값만 가지게 한다면 시프트 연산으로 처리 가능...
 }
