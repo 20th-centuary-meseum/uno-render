@@ -112,7 +112,7 @@ byte select_character_loop()
 		if (!char2_selected)
 			char2_id = changed_char_id(char2_id, con2, con2_last);
 
-		need_rerender = (con1_last != con1 && !char1_selected) || (con2_last != con2 && !char2_selected);
+		need_rerender = (con1_last != con1) || (con2_last != con2);
 	}
 
 	return char1_id << 4 | char2_id;
