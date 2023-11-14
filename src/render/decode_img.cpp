@@ -42,9 +42,13 @@ void DecodeSpriteReverse(byte image_byte, short x_pos, short y_pos)
 
     for (byte i = 0; i < TILE_SIZE; i++)
     {
-        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] |= (~pgm_read_byte(&sprite_imgs[image_byte][i * 2]) & 0b11111111) >> shift_length;
-        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] |= (~pgm_read_byte(&sprite_imgs[image_byte][i * 2]) & 0b11111111) << (8 - shift_length) | (~pgm_read_byte(&sprite_imgs[image_byte][i * 2 + 1]) & 0b11111111) >> shift_length;
-        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 2] |= (~pgm_read_byte(&sprite_imgs[image_byte][i * 2 + 1]) & 0b11111111) << (8 - shift_length);
+        byte buffer = TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] & ( 0b11111111 << (8 - shift_length));
+
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8] = buffer | ((~pgm_read_byte(&sprite_imgs[image_byte][i * 2]) & 0b11111111) >> shift_length);
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 1] = (~pgm_read_byte(&sprite_imgs[image_byte][i * 2]) & 0b11111111) << (8 - shift_length) | (~pgm_read_byte(&sprite_imgs[image_byte][i * 2 + 1]) & 0b11111111) >> shift_length;
+
+        buffer = TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 2] & (0b11111111 >> shift_length);
+        TV.screen[tmp_y + x_pos / 8 + i * MAX_X / 8 + 2] = buffer | ((~pgm_read_byte(&sprite_imgs[image_byte][i * 2 + 1]) & 0b11111111) << (8 - shift_length));
     }
 
     if (shift_length == 0)
@@ -65,16 +69,62 @@ void DecodeSpriteReverse(byte image_byte, short x_pos, short y_pos)
         TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8] |= 0b11111111 >> shift_length;
         TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8 + 1] |= 0b11111111;
         TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8 + 2] |= 0b11111111 << (8 - shift_length);
+
         TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8] |= 0b11111111 >> shift_length;
         TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8 + 1] |= 0b11111111;
         TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8 + 2] |= 0b11111111 << (8 - shift_length);
 
         for (byte y = y_pos - 1; y <= y_pos + TILE_SIZE; y++)
         {
-            TV.screen[y * MAX_X / 8 + (x_pos - 1) / 8] |= 0b00000001 << (8 - shift_length);
+            TV.screen[y * MAX_X / 8 + (x_pos -  1) / 8] |= 0b00000001 << (8 - shift_length);
             TV.screen[y * MAX_X / 8 + (x_pos + 16) / 8] |= 0b10000000 >> shift_length;
         }
     }
+}
+
+void DecodeSpriteBorder(byte image_byte, short x_pos, short y_pos)
+{
+    byte shift_length = x_pos % 8;
+
+    if (shift_length == 0)
+    {
+        TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8] = 0;
+        TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8 + 1] = 0;
+
+        TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8] = 0;
+        TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8 + 1] = 0;
+
+        for (byte y = y_pos - 1; y <= y_pos + TILE_SIZE; y++)
+        {
+            TV.screen[y * MAX_X / 8 + (x_pos -  1) / 8] &= (0b11111110);
+            TV.screen[y * MAX_X / 8 + (x_pos + 16) / 8] &= (0b01111111);
+        }
+    }
+    else
+    {
+        byte buffer = TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8];
+
+        TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8] = buffer >> (8 - shift_length) << (8 - shift_length);
+        TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8 + 1] = 0;
+
+        buffer = TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8 + 2];
+        TV.screen[(y_pos - 1) * MAX_X / 8 + x_pos / 8 + 2] = buffer << shift_length >> shift_length;
+
+        buffer = TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8];
+        TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8] = buffer >> (8 - shift_length) << (8 - shift_length);
+        TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8 + 1] = 0;
+        
+        buffer = TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8 + 2];
+        TV.screen[(y_pos + TILE_SIZE) * MAX_X / 8 + x_pos / 8 + 2] = buffer << shift_length >> shift_length;
+
+        for (byte y = y_pos - 1; y <= y_pos + TILE_SIZE; y++)
+        {
+            TV.screen[y * MAX_X / 8 + (x_pos -  1) / 8] &= 0b11111110 << (8 - shift_length);
+            TV.screen[y * MAX_X / 8 + (x_pos + 16) / 8] &= 0b01111111 >> shift_length;
+        }
+    }
+
+    DecodeSprite(image_byte, x_pos, y_pos);
 }
 
 void DecodeBullet(short x_pos, short y_pos)
