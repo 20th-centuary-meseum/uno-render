@@ -82,9 +82,6 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 			player1.next_frame(background.map);
 			player2.next_frame(background.map);
 
-			player1.render();
-			player2.render();
-
 			player1_bullets.next_frame(&player2, &player1, &items, &background);
 			player2_bullets.next_frame(&player1, &player2, &items, &background);
 
@@ -95,6 +92,9 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 			player2_bullets.render();
 
 			items.render();
+
+			player1.render();
+			player2.render();
 
 			if (player1.hp <= 0)
 			{
