@@ -47,8 +47,6 @@ byte select_character_loop()
 	bool char2_selected = false;
 	byte con2_last = 0;
 
-	bool need_rerender = true;
-
 	byte coords[][2] = {
 		{24, 24},
 		{X_START, Y_START},
@@ -57,63 +55,90 @@ byte select_character_loop()
 		{X_START + 28, Y_START + 19},
 		{X_START + 38, Y_START},
 	};
+
 	unsigned long last = millis();
 	unsigned long current = millis();
 
+	byte blink = 0;
+
 	DecodeFull(SELECT_CHAR);
 
-	while (!char1_selected || !char2_selected)
+	while (!char1_selected)
 	{
 		current = millis();
-		if (need_rerender)
+		if (current - last < 60)
 		{
-			DecodeFull(SELECT_CHAR);
-
-			if (char1_selected)
+			if (char1_selected || blink < 20)
 				DecodeSpriteReverse(char1_id << 5, coords[0][0], coords[0][1]);
 			else
-				DecodeSprite(char1_id << 5, coords[0][0], coords[0][1]);
+				DecodeSpriteBorder(char1_id << 5, coords[0][0], coords[0][1]);
 
-			if (char2_selected)
-				DecodeSpriteReverse(char2_id << 5, coords[0][0] + 64, coords[0][1]);
-			else
-				DecodeSprite(char2_id << 5, coords[0][0] + 64, coords[0][1]);
+			DecodeSpriteBorder(char2_id << 5, coords[0][0] + 64, coords[0][1]);
 
 			for (byte i = 0; i < 5; i++)
 			{
 				if (i == char1_id)
 					DecodeSpriteReverse(i << 5, coords[i + 1][0], coords[i + 1][1]);
 				else
-					DecodeSprite(i << 5, coords[i + 1][0], coords[i + 1][1]);
+					DecodeSpriteBorder(i << 5, coords[i + 1][0], coords[i + 1][1]);
 
-				if (i == char2_id)
-					DecodeSpriteReverse(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
-				else
-					DecodeSprite(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
+				DecodeSpriteBorder(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
 			}
-
 			last = millis();
+			blink = (blink + 1) % 40;
 		}
 		if (CON_SELECT(con1))
 		{
 			char1_selected = true;
 		}
+
+		con1_last = con1;
+		update_controller();
+
+		if (!char1_selected)
+			char1_id = changed_char_id(char1_id, con1, con1_last);
+	}
+
+	while (!char2_selected)
+	{
+		current = millis();
+		if (current - last < 60)
+		{
+			if (char2_selected || blink < 20)
+				DecodeSpriteReverse(char2_id << 5, coords[0][0] + 64, coords[0][1]);
+			else
+				DecodeSpriteBorder(char2_id << 5, coords[0][0] + 64, coords[0][1]);
+
+			for (byte i = 0; i < 5; i++)
+			{
+				if (i == char1_id)
+					DecodeSpriteReverse(i << 5, coords[i + 1][0], coords[i + 1][1]);
+				else
+					DecodeSpriteBorder(i << 5, coords[i + 1][0], coords[i + 1][1]);
+
+				if (i == char2_id)
+					DecodeSpriteReverse(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
+				else
+					DecodeSpriteBorder(i << 5, coords[i + 1][0] + 64, coords[i + 1][1]);
+			}
+
+			last = millis();
+			blink = (blink + 1) % 40;
+		}
+
 		if (CON_SELECT(con2))
 		{
 			char2_selected = true;
 		}
 
-		con1_last = con1;
 		con2_last = con2;
 		update_controller();
 
-		if (!char1_selected)
-			char1_id = changed_char_id(char1_id, con1, con1_last);
 		if (!char2_selected)
 			char2_id = changed_char_id(char2_id, con2, con2_last);
-
-		need_rerender = (con1_last != con1) || (con2_last != con2);
 	}
+
+	delay(1000);
 
 	return char1_id << 4 | char2_id;
 }

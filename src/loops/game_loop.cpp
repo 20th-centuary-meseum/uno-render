@@ -11,6 +11,8 @@ byte game_loop(byte char1_id, byte char2_id)
 
 	while (p1_score < 3 && p2_score < 3)
 	{
+		ready_loop();
+
 		if (set_loop(char1_id, char2_id, p1_score, p2_score) == 1)
 		{
 			p1_score += 1;
@@ -22,6 +24,17 @@ byte game_loop(byte char1_id, byte char2_id)
 	}
 
 	return p1_score == 3 ? 1 : 2;
+}
+
+byte ready_loop() 
+{
+	unsigned long last = millis();
+	unsigned long current = millis();
+	while (current - last < 2000)
+	{
+		current = millis();
+		DecodeFull(READY_NEXT_ROUND);
+	}
 }
 
 // return value 형식 => 1p 승리: return 1. 2p 승리: return 2
@@ -82,9 +95,6 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 			player1.next_frame(background.map);
 			player2.next_frame(background.map);
 
-			player1.render();
-			player2.render();
-
 			player1_bullets.next_frame(&player2, &player1, &items, &background);
 			player2_bullets.next_frame(&player1, &player2, &items, &background);
 
@@ -95,6 +105,9 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 			player2_bullets.render();
 
 			items.render();
+
+			player1.render();
+			player2.render();
 
 			if (player1.hp <= 0)
 			{
