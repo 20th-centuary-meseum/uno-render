@@ -1,6 +1,7 @@
 #include "./character.hpp"
 #include "./bullet.hpp"
 #include "./decode_img.hpp"
+#include "../sound/notes.hpp"
 
 #define CHARACTER_MAX_HP 10
 
