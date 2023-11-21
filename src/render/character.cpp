@@ -155,6 +155,8 @@ void Character::use_item()
 		using_item_frame_cnt = 120;
 		break;
 	case ITEM_DASH:
+		if (!vx && !vy)
+			return;
 		using_item_frame_cnt = 1;
 		break;
 	case ITEM_SPED:
