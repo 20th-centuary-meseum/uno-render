@@ -1,5 +1,7 @@
 #include "./character.hpp"
 #include "./bullet.hpp"
+#include "./decode_img.hpp"
+#include "../sound/notes.hpp"
 
 #define CHARACTER_MAX_HP 10
 
@@ -154,6 +156,8 @@ void Character::use_item()
 		using_item_frame_cnt = 120;
 		break;
 	case ITEM_DASH:
+		if (!vx && !vy)
+			return;
 		using_item_frame_cnt = 1;
 		break;
 	case ITEM_SPED:
@@ -234,16 +238,16 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 	switch (GET_DIR_BIT(state))
 	{
 	case DIR_UP:
-		did_crash = map[(y + vy + 14) / TILE_SIZE * MAP_WIDTH + (x + 1) / TILE_SIZE] | map[(y + vy + 14) / TILE_SIZE * MAP_WIDTH + (x + 14) / TILE_SIZE];
+		did_crash = map[(y + vy + 14) / TILE_SIZE * MAP_WIDTH + (x + 2) / TILE_SIZE] | map[(y + vy + 14) / TILE_SIZE * MAP_WIDTH + (x + 13) / TILE_SIZE]; // x+1->x+2, x+14->x_13
 		break;
 	case DIR_RIGHT:
-		did_crash = map[(y + 1) / TILE_SIZE * MAP_WIDTH + (x + vx + 14) / TILE_SIZE] | map[(y + 14) / TILE_SIZE * MAP_WIDTH + (x + vx + 14) / TILE_SIZE];
+		did_crash = map[(y + 2) / TILE_SIZE * MAP_WIDTH + (x + vx + 14) / TILE_SIZE] | map[(y + 13) / TILE_SIZE * MAP_WIDTH + (x + vx + 14) / TILE_SIZE];
 		break;
 	case DIR_DOWN:
-		did_crash = map[(y + vy + 1) / TILE_SIZE * MAP_WIDTH + (x + 1) / TILE_SIZE] | map[(y + vy + 1) / TILE_SIZE * MAP_WIDTH + (x + 14) / TILE_SIZE];
+		did_crash = map[(y + vy + 1) / TILE_SIZE * MAP_WIDTH + (x + 2) / TILE_SIZE] | map[(y + vy + 1) / TILE_SIZE * MAP_WIDTH + (x + 13) / TILE_SIZE];
 		break;
 	case DIR_LEFT:
-		did_crash = map[(y + 1) / TILE_SIZE * MAP_WIDTH + (x + vx + 1) / TILE_SIZE] | map[(y + 14) / TILE_SIZE * MAP_WIDTH + (x + vx + 1) / TILE_SIZE];
+		did_crash = map[(y + 2) / TILE_SIZE * MAP_WIDTH + (x + vx + 1) / TILE_SIZE] | map[(y + 13) / TILE_SIZE * MAP_WIDTH + (x + vx + 1) / TILE_SIZE];
 		break;
 	}
 	if (did_crash || !(is_x_in() && is_y_in()))
@@ -306,7 +310,10 @@ void Character::damage(byte atk)
 	if (using_item_id != ITEM_SHLD)
 	{
 		if (hp > 0)
+		{
 			hp -= atk;
+			TV.tone(NOTE_B6, 200);
+		}
 	}
 	return;
 }

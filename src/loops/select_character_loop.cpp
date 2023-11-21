@@ -2,6 +2,7 @@
 #include "../controller/controller.hpp"
 #include "../render/render.hpp"
 #include "../assets/assets.hpp"
+#include "../sound/sound.hpp"
 
 #define X_START 5
 #define Y_START 54
@@ -39,6 +40,8 @@ byte changed_char_id(byte cur_id, byte con, byte con_last)
 // return value 형식 => 첫 4비트: char1 id, 다음 4비트: char2 id
 byte select_character_loop()
 {
+	SoundPlayer sound_player(MUSIC_SHEET_BGM);
+
 	byte char1_id = 0;
 	bool char1_selected = false;
 	byte con1_last = 0;
@@ -97,6 +100,7 @@ byte select_character_loop()
 
 		if (!char1_selected)
 			char1_id = changed_char_id(char1_id, con1, con1_last);
+		sound_player.update();
 	}
 
 	while (!char2_selected)
@@ -126,7 +130,7 @@ byte select_character_loop()
 			blink = (blink + 1) % 40;
 		}
 
-		if (CON_SELECT(con2))
+		if (CON_SELECT(con2) && char2_id != char1_id)
 		{
 			char2_selected = true;
 		}
@@ -136,6 +140,8 @@ byte select_character_loop()
 
 		if (!char2_selected)
 			char2_id = changed_char_id(char2_id, con2, con2_last);
+
+		sound_player.update();
 	}
 
 	delay(1000);
