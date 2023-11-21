@@ -126,7 +126,7 @@ byte select_character_loop()
 			blink = (blink + 1) % 40;
 		}
 
-		if (CON_SELECT(con2))
+		if (CON_SELECT(con2) && char2_id != char1_id)
 		{
 			char2_selected = true;
 		}
