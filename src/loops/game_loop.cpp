@@ -11,8 +11,6 @@ byte game_loop(byte char1_id, byte char2_id)
 
 	while (p1_score < 3 && p2_score < 3)
 	{
-		ready_loop();
-
 		if (set_loop(char1_id, char2_id, p1_score, p2_score) == 1)
 		{
 			p1_score += 1;
@@ -26,20 +24,15 @@ byte game_loop(byte char1_id, byte char2_id)
 	return p1_score == 3 ? 1 : 2;
 }
 
-byte ready_loop() 
-{
-	unsigned long last = millis();
-	unsigned long current = millis();
-	while (current - last < 2000)
-	{
-		current = millis();
-		DecodeFull(READY_NEXT_ROUND);
-	}
-}
-
 // return value 형식 => 1p 승리: return 1. 2p 승리: return 2
 byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 {
+	unsigned long last = millis();
+	unsigned long current = millis();
+
+	// 로딩할 때 DecodeFull.
+	DecodeFull(READY_NEXT_ROUND);
+
 	// hyper mode setting
 	Character::deactivate_hyper();
 	Bullet::deactivate_hyper();
@@ -49,9 +42,7 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 	short frame_left = 1800;
 	bool is_hyper = false;
 
-	Rand::refresh();
-	Rand::get();
-	Background background(Rand::get());
+	Background background;
 
 	Character player1(char1_id, 1, 16);
 	Bullets player1_bullets;
@@ -63,8 +54,7 @@ byte set_loop(byte char1_id, byte char2_id, byte p1_score, byte p2_score)
 
 	Items items;
 
-	unsigned long last = millis();
-	unsigned long current = millis();
+	while (millis() - last < 2000);
 
 	while (true)
 	{
