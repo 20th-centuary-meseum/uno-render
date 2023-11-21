@@ -1,5 +1,6 @@
 #include "./character.hpp"
 #include "./bullet.hpp"
+#include "./decode_img.hpp"
 
 #define CHARACTER_MAX_HP 10
 
@@ -305,8 +306,11 @@ void Character::damage(byte atk)
 {
 	if (using_item_id != ITEM_SHLD)
 	{
-		if (hp > 0)
+		if (hp > 0) 
+		{
 			hp -= atk;
+			TV.tone(NOTE_B6, 200);
+		}
 	}
 	return;
 }
