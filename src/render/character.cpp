@@ -1,24 +1,35 @@
 #include "./character.hpp"
+#include "./bullet.hpp"
+#include "./decode_img.hpp"
 
-#define CHARACTER_PX 2
-#define CHARACTER_FRAME 1
 #define CHARACTER_MAX_HP 10
+
+static byte Character::CHARACTER_PX = 2;
+static byte Character::CHARACTER_FRAME = 1;
+static byte Character::CHARACTER_ATK_DMG = 1;
 
 Character::Character(byte _character_id, short _x, short _y) : Sprite(_character_id, _x, _y)
 {
 	state = 0;
 	atk_frame_cnt = 0;
 	SET_CHAR_BIT(state, _character_id);
-	hp = CHARACTER_MAX_HP - 5; // 음수, 최대 체력 이상 예외처리 필수!
+	hp = CHARACTER_MAX_HP; // 음수, 최대 체력 이상 예외처리 필수!
 	possess_item_id = 0;
 	using_item_id = 0;
 	using_item_frame_cnt = 0; // frame update, 모션 타이머 조작할 때 같이 줄이자!
-	atk_dmg = 1;
+	atk_dmg = CHARACTER_ATK_DMG;
 }
 
-Character *test()
+static void Character::activate_hyper()
 {
-	return new Character(0, 0, 0);
+	CHARACTER_PX = 3;
+	CHARACTER_ATK_DMG = 2;
+}
+
+static void Character::deactivate_hyper()
+{
+	CHARACTER_PX = 2;
+	CHARACTER_ATK_DMG = 1;
 }
 
 void Character::set_speed(byte px, byte frame)
@@ -86,7 +97,7 @@ bool Character::attack()
 	}
 
 	SET_ATK_BIT(state, true);
-	atk_frame_cnt = ATTACK_DELAY;
+	atk_frame_cnt = Bullets::ATTACK_DELAY;
 	return true;
 }
 
@@ -95,13 +106,35 @@ void Character::get_item_if_crashed(Items &items)
 	if (possess_item_id != 0)
 		return;
 
-	for (byte i = 0; i < MAX_POSSESS_ITEM; i++)
+	int8_t item_id = 0;
+
+	item_id = items.at(x + 4, y + 4);
+	if (item_id > 0)
 	{
-		if (abs(items[i]->x - x) < 8 && abs(items[i]->y - y) < 8)
-		{
-			possess_item_id = items[i]->face_id;
-			items.delete_item(i);
-		}
+		possess_item_id = item_id;
+		items.delete_item(x + 4, y + 4);
+		return;
+	}
+	item_id = items.at(x + 4, y + 12);
+	if (item_id > 0)
+	{
+		possess_item_id = item_id;
+		items.delete_item(x + 4, y + 12);
+		return;
+	}
+	item_id = items.at(x + 12, y + 4);
+	if (item_id > 0)
+	{
+		possess_item_id = item_id;
+		items.delete_item(x + 12, y + 4);
+		return;
+	}
+	item_id = items.at(x + 12, y + 12);
+	if (item_id > 0)
+	{
+		possess_item_id = item_id;
+		items.delete_item(x + 12, y + 12);
+		return;
 	}
 }
 
@@ -115,8 +148,8 @@ void Character::use_item()
 	case ITEM_HEAL:
 		using_item_frame_cnt = 60;
 		hp += 2;
-		if (hp > 10)
-			hp = 10;
+		if (hp > CHARACTER_MAX_HP)
+			hp = CHARACTER_MAX_HP;
 		break;
 	case ITEM_SHLD:
 		using_item_frame_cnt = 120;
@@ -129,7 +162,7 @@ void Character::use_item()
 		break;
 	case ITEM_DAMG:
 		using_item_frame_cnt = 120;
-		atk_dmg = 2;
+		atk_dmg = CHARACTER_ATK_DMG * 2;
 		break;
 
 	default:
@@ -150,7 +183,6 @@ void Character::render()
 
 void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 {
-	bool did_crash = false;
 	if (using_item_id == ITEM_SPED)
 	{
 		// move_by_controller에서 매 프레임마다 초기화 해줌.
@@ -159,24 +191,60 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 	}
 	else if (using_item_id == ITEM_DASH)
 	{
-		// 2 * 12 = 24 = 16 * 1.5, 1.5칸 대쉬.
-		vx *= 12;
-		vy *= 12;
+		x += vx * 12;
+		y += vy * 12;
+
+		if (x < 0)
+			x = 0;
+		else if (x >= MAX_X)
+			x = MAX_X - 15;
+		if (y < 0)
+			y = 0;
+		else if (y >= MAX_Y)
+			y = MAX_Y - 15;
+
+		byte curr_map_y = (y + 15 * (GET_DIR_BIT(state) == DIR_UP)) / TILE_SIZE;
+		byte curr_map_x = (x + 15 * (GET_DIR_BIT(state) == DIR_RIGHT)) / TILE_SIZE;
+		byte dx = vx / CHARACTER_PX;
+		byte dy = vy / CHARACTER_PX;
+
+		if (map[curr_map_y * MAP_WIDTH + curr_map_x])
+		{
+			while (map[curr_map_y * MAP_WIDTH + curr_map_x])
+			{
+				curr_map_x -= dx;
+				curr_map_y -= dy;
+			}
+			x = curr_map_x * TILE_SIZE;
+			y = curr_map_y * TILE_SIZE;
+		}
 	}
 
+	if (using_item_id == ITEM_SHLD)
+	{
+		x_frame = 2;
+		y_frame = 2;
+	}
+
+	if (using_item_id != ITEM_DAMG)
+	{
+		atk_dmg = CHARACTER_ATK_DMG;
+	}
+
+	bool did_crash = false;
 	switch (GET_DIR_BIT(state))
 	{
 	case DIR_UP:
-		did_crash = map[(y + vy + 15) / TILE_SIZE * MAP_WIDTH + x / TILE_SIZE] | map[(y + vy + 15) / TILE_SIZE * MAP_WIDTH + (x + 15) / TILE_SIZE];
+		did_crash = map[(y + vy + 14) / TILE_SIZE * MAP_WIDTH + (x + 1) / TILE_SIZE] | map[(y + vy + 14) / TILE_SIZE * MAP_WIDTH + (x + 14) / TILE_SIZE];
 		break;
 	case DIR_RIGHT:
-		did_crash = map[y / TILE_SIZE * MAP_WIDTH + (x + vx + 15) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx + 15) / TILE_SIZE];
+		did_crash = map[(y + 1) / TILE_SIZE * MAP_WIDTH + (x + vx + 14) / TILE_SIZE] | map[(y + 14) / TILE_SIZE * MAP_WIDTH + (x + vx + 14) / TILE_SIZE];
 		break;
 	case DIR_DOWN:
-		did_crash = map[(y + vy) / TILE_SIZE * MAP_WIDTH + x / TILE_SIZE] | map[(y + vy) / TILE_SIZE * MAP_WIDTH + (x + 15) / TILE_SIZE];
+		did_crash = map[(y + vy + 1) / TILE_SIZE * MAP_WIDTH + (x + 1) / TILE_SIZE] | map[(y + vy + 1) / TILE_SIZE * MAP_WIDTH + (x + 14) / TILE_SIZE];
 		break;
 	case DIR_LEFT:
-		did_crash = map[y / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE] | map[(y + 15) / TILE_SIZE * MAP_WIDTH + (x + vx) / TILE_SIZE];
+		did_crash = map[(y + 1) / TILE_SIZE * MAP_WIDTH + (x + vx + 1) / TILE_SIZE] | map[(y + 14) / TILE_SIZE * MAP_WIDTH + (x + vx + 1) / TILE_SIZE];
 		break;
 	}
 	if (did_crash || !(is_x_in() && is_y_in()))
@@ -184,16 +252,16 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		switch (GET_DIR_BIT(state))
 		{
 		case DIR_UP:
-			y = (y + vy) / TILE_SIZE;
+			y = (y + vy + 1) / TILE_SIZE * TILE_SIZE;
 			break;
 		case DIR_RIGHT:
-			x = (x + vx) / TILE_SIZE;
+			x = (x + vx + 1) / TILE_SIZE * TILE_SIZE;
 			break;
 		case DIR_DOWN:
-			y = (y + vy - 15) / TILE_SIZE;
+			y = (y + vy + 1 < MIN_Y) ? MIN_Y : (y + vy + 1) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
 			break;
 		case DIR_LEFT:
-			x = (x + vx - 15) / TILE_SIZE;
+			x = (x + vx + 1 < MIN_X) ? MIN_X : (x + vx + 1) / TILE_SIZE * TILE_SIZE + TILE_SIZE;
 			break;
 		}
 	}
@@ -207,7 +275,7 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		atk_frame_cnt -= 1;
 	}
 
-	if (atk_frame_cnt < ATTACK_DELAY - 5)
+	if (atk_frame_cnt < Bullets::ATTACK_DELAY - 5)
 	{
 		SET_ATK_BIT(state, false);
 	}
@@ -230,7 +298,6 @@ void Character::next_frame(byte *map) // 블록 충돌? , 투사체 충돌?
 		if (using_item_frame_cnt == 0)
 		{
 			using_item_id = 0;
-			atk_dmg = 1;
 		}
 	}
 }
@@ -239,9 +306,11 @@ void Character::damage(byte atk)
 {
 	if (using_item_id != ITEM_SHLD)
 	{
-		hp -= atk;
-		if (hp < 0)
-			hp = 0;
+		if (hp > 0) 
+		{
+			hp -= atk;
+			TV.tone(NOTE_B6, 200);
+		}
 	}
 	return;
 }

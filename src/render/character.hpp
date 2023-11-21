@@ -24,8 +24,6 @@
 #define SET_FRAME_BIT(state, frame) state = (state & 0b11111100) | frame
 #define GET_FRAME_BIT(state) state = (state & 0b00000011)
 
-#define MAX_POSSESS_ITEM 2
-
 #include "../../common.hpp"
 #include "./sprite.hpp"
 #include "./decode_img.hpp"
@@ -34,15 +32,23 @@
 
 class Character : public Sprite // 12 byte
 {
+	static byte CHARACTER_PX;
+	static byte CHARACTER_FRAME;
+	static byte CHARACTER_ATK_DMG;
+
 public:
-	Character(byte _character_id, short _x, short _y);
 	byte state;
-	byte hp;
+	int8_t hp;
 	byte atk_frame_cnt;
 	byte possess_item_id;
 	byte using_item_id;
 	byte using_item_frame_cnt;
 	byte atk_dmg;
+
+	Character(byte _character_id, short _x, short _y);
+
+	static void activate_hyper();
+	static void deactivate_hyper();
 
 	void set_speed(byte px, byte frame);
 

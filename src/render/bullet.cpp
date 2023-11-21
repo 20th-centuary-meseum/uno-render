@@ -4,10 +4,10 @@
 #define HITBOX_CHAR 8
 #define HITBOX_BULLET 5
 
-#define BULLET_PX 3
-#define BULLET_FRAME 1
-
 #define NO_BACKGROUND 255
+
+static byte Bullet::BULLET_PX = 3;
+static byte Bullet::BULLET_FRAME = 1;
 
 Bullet::Bullet(byte _x, byte _y, byte dir)
 {
@@ -48,7 +48,16 @@ Bullet::Bullet(byte _x, byte _y, byte dir)
 	}
 
 	face_id = 16;
-	frame_left = BULLET_FRAME_LEFT;
+	frame_left = Bullets::BULLET_FRAME_LEFT;
+}
+
+static void Bullet::activate_hyper()
+{
+	BULLET_PX = 5;
+}
+static void Bullet::deactivate_hyper()
+{
+	BULLET_PX = 3;
 }
 
 void Bullet::next_frame()
@@ -89,11 +98,23 @@ bool Bullet::did_crash_player(Character *character)
 }
 
 // -----------------------------------------------------
+static byte Bullets::BULLET_FRAME_LEFT = 30;
+static byte Bullets::ATTACK_DELAY = 30;
+
 Bullets::Bullets() : bullets{
 						 0,
 					 }
 {
 	next_bullet_idx = 0;
+}
+
+static void Bullets::activate_hyper()
+{
+	ATTACK_DELAY = 20;
+}
+static void Bullets::deactivate_hyper()
+{
+	ATTACK_DELAY = 30;
 }
 
 void Bullets::add_bullet(byte x, byte y, byte dir)
@@ -143,9 +164,9 @@ void Bullets::next_frame(Character *player_vict, Character *player_owner, Items 
 		{
 			byte tile_x = map_crash_xy >> 4;
 			byte tile_y = map_crash_xy & 0b00001111;
-			if ((background->map[tile_x + tile_y * MAP_WIDTH] >> 2) < 4)
+			if (!background->is_invinsible(tile_x, tile_y))
 			{
-				background->set(tile_x, tile_y, 0, 0);
+				background->set(tile_x, tile_y, 0);
 				items->add_item(tile_x, tile_y);
 			}
 			delete_bullet(i);
